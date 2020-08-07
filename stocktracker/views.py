@@ -30,13 +30,14 @@ stocks = format_stock_info(['BNGO', 'MRNA', 'MARA', 'TAOP'])
 # 	print(stocks)
 # 	sleep(45)
 
-# while True:
-# 	stocks = format_stock_info(['BNGO', 'MRNA', 'MARA', 'TAOP'])
-# 	sleep(60)
+# After you login, loop through your stock tickers using format_stock_info to get the stock info on each
 
 def home(request):
 	context = {
 		'stocks': stocks
 	}
 	return render(request, 'stocktracker/home.html', context)
+
+def about(request):
+	return render(request, 'stocktracker/about.html')
 

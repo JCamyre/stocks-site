@@ -24,7 +24,7 @@
 	      <div class="collapse navbar-collapse" id="navbarToggle">
 	        <div class="navbar-nav mr-auto">
 	          <a class="nav-item nav-link" href="{% url 'stocktracker-home' %}">Home</a>
-	          <a class="nav-item nav-link" href="#">About</a>
+	          <a class="nav-item nav-link" href="{% url 'stocktracker-about' %}">About</a>
 	        </div>
 	      </div>
 	    </div>
@@ -39,6 +39,8 @@
 <!-- 	    <div class="col-md-4"></div> -->	  
 		</div>
 	</main>
+
+    <link rel="shortcut icon" href="{% static 'stocktracker/images/favicon.ico' %}" />
 
 	<!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
