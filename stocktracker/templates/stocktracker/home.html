@@ -1,0 +1,15 @@
+{% extends 'stocktracker/base.html' %}
+{% block content %}
+  	<H1>Stock Tracker</H1>
+	{% for stock in stocks %} 
+		<article class="media content-section">
+		  <div class="media-body">
+		    <div class="article-metadata">
+			    <h2 class="article-title mr-2"><a href="https://finance.yahoo.com/quote/{{ stock.stock_ticker }}" target='_blank'>{{ stock.stock_ticker }}</a>: ${{ stock.current_price|floatformat:2 }}</h2>
+		    </div>
+<!-- 			<p class='text-muted'>Current: {{ stock.current_percentage|floatformat:2 }}%, High: {{ stock.high_percentage|floatformat:2 }}%, Low: {{ stock.low_percentage|floatformat:2 }}%</p>		
+ -->		    <p class="article-content" style='font-size: 18px'>Current: {{ stock.current_percentage|floatformat:2 }}%, High: {{ stock.high_percentage|floatformat:2 }}%, Low: {{ stock.low_percentage|floatformat:2 }}%</p>  
+		</div>
+		</article>
+	{% endfor %}
+{% endblock content %}
