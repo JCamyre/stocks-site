@@ -5,7 +5,9 @@ sys.path.append('C:/Users/JWcam/Desktop/All_projects/Python-Trading')
 import pytrading 
 from pytrading.live_trading import trending_stocks
 from pytrading.download_tickers import load_biggest_movers
+from django import template
 
+register = template.Library()
 
 def format_stock_info(*tickers):
 	stocks = []
@@ -30,4 +32,15 @@ def get_trending_stocks():
 			a = pytrading.Portfolio(load_biggest_movers()[:51])
 		trending_stocks(a)
 	return stocks
+
 # How to make the code run every 90 s
+
+# Template filters https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#howto-custom-template-tags
+# I'll do it later
+@register.filter(name='stocks_from_portfolio')
+def stocks_from_portfolio(value):
+	'''
+	'value' would be the Portfolio model
+	'''
+	return format_stock_info(value)
+

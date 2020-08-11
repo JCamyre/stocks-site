@@ -1,0 +1,10 @@
+{% extends 'stocktracker/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<!-- Don't have to import user, Django itself has this variable for the current logged-in user -->
+	<h1>{{ user.username }}, {{ user.id }}</h1>
+	{% for portfolio in portfolios %}
+		<p>{{ portfolio.stocks|stocks_from_portfolio }}</p>
+	{% endfor %}
+
+{% endblock content %}

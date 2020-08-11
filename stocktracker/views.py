@@ -11,7 +11,6 @@ def home(request):
 		'stocks': format_stock_info(Portfolio.objects.first().stocks),
 		'yo': lambda: datetime.now().strftime('%H:%M:%S')
 	}
-	print(format_stock_info(Portfolio.objects.first().stocks))
 	return render(request, 'stocktracker/home.html', context)
 
 def about(request):

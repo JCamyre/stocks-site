@@ -2,29 +2,31 @@
 {% block content %}
   	<h1>Stock Tracker</h1>
   	<p>{{ yo }}</p>
-	<article class="media content-section">
-	<div class="media-body">
+
 	{% for stock in stocks %}
-	    <div class="article-metadata"> 
-	    <h3 class="article-title mr-2"><a href="https://finance.yahoo.com/quote/{{ stock.stock_ticker }}" target='_blank'>{{ stock.stock_ticker }}</a>: ${{ stock.current_price|floatformat:2 }}</h3>
-		<p class="article-content" style='font-size: 18px; line-height: 20px'>Current: {% if stock.current_percentage >= 0 %}
-			<span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 
-		{% else %}
-			<span style='color: red'>{{ stock.current_percentage|floatformat:2 }}%</span> 
-		{% endif %}
-		<span>High: </span> {% if stock.high_percentage >= 0 %}		    
-			<span style='color: green'>{{ stock.high_percentage|floatformat:2 }}%</span> 
-		{% else %}
-			<span style='color: red'>{{ stock.high_percentage|floatformat:2 }}%</span> 
-		{% endif %}
-		<span>Low: </span> {% if stock.low_percentage >= 0 %}		    
-			<span style='color: green'>{{ stock.low_percentage|floatformat:2 }}%</span> 
-		{% else %}
-			<span style='color: red'>{{ stock.low_percentage|floatformat:2 }}%</span> 
-		{% endif %}
-			</p>  
-	    </div>
-	{% endfor %}
-	</div>
+	<article class="media content-section">
+		<div class="media-body">
+		    <div class="article-metadata"> 
+		    <h3 class="article-title mr-2"><a href="https://finance.yahoo.com/quote/{{ stock.stock_ticker }}" target='_blank'>{{ stock.stock_ticker }}</a>: ${{ stock.current_price|floatformat:2 }}</h3>
+			<p class="article-content" style='font-size: 18px; line-height: 20px'>Current: {% if stock.current_percentage >= 0 %}
+				<span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 
+			{% else %}
+				<span style='color: red'>{{ stock.current_percentage|floatformat:2 }}%</span> 
+			{% endif %}
+			<span>High: </span> {% if stock.high_percentage >= 0 %}		    
+				<span style='color: green'>{{ stock.high_percentage|floatformat:2 }}%</span> 
+			{% else %}
+				<span style='color: red'>{{ stock.high_percentage|floatformat:2 }}%</span> 
+			{% endif %}
+			<span>Low: </span> {% if stock.low_percentage >= 0 %}		    
+				<span style='color: green'>{{ stock.low_percentage|floatformat:2 }}%</span> 
+			{% else %}
+				<span style='color: red'>{{ stock.low_percentage|floatformat:2 }}%</span> 
+			{% endif %}
+				</p>  
+		    </div>
+    	</div>
 	</article>
+	{% endfor %}
+
 {% endblock content %}
