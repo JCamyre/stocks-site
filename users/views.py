@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib import messages 
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm
 from stocktracker.models import Portfolio
@@ -14,13 +15,14 @@ def register(request):
 			return redirect('login')
 	else:
 		form = UserRegisterForm()
-	return render(request, 'users/register.html')
+	# Make sure to pass form through
+	return render(request, 'users/register.html', {'form': form})
 
 @login_required
 def profile(request):
+	current_user = request.user
 	context = {
-		'portfolios': Portfolio.objects.all(),
-		'get_stock_info': format_stock_info
+		'portfolios': current_user.portfolio_set.all(),
 	}
 	return render(request, 'users/profile.html', context)
 

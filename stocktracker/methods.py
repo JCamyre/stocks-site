@@ -37,10 +37,10 @@ def get_trending_stocks():
 
 # Template filters https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#howto-custom-template-tags
 # I'll do it later
-@register.filter(name='stocks_from_portfolio')
-def stocks_from_portfolio(value):
-	'''
-	'value' would be the Portfolio model
-	'''
-	return format_stock_info(value)
+# @register.filter(name='stocks_from_portfolio')
+# def stocks_from_portfolio(value):
+# 	'''
+# 	'value' would be the Portfolio model
+# 	'''
+# 	return format_stock_info(value)
 
