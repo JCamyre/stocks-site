@@ -1,0 +1,2 @@
+Watch Django Tutorial Part 8/9, skipped for now.
+Each user has their portfolios with their # shares and what they got in at so like social media for traders

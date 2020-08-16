@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from datetime import datetime
 from .methods import format_stock_info
 from .models import Portfolio
@@ -12,6 +14,53 @@ def home(request):
 		'yo': lambda: datetime.now().strftime('%H:%M:%S')
 	}
 	return render(request, 'stocktracker/home.html', context)
+
+class PortfolioListView(ListView):
+	model = Portfolio
+	template_name = 'stocktracker/home.html'
+	context_object_name = 'portfolio'
+	ordering = ['-date_posted']
+
+	# def get_context_data(self, **kwargs):
+	# 	context = super().get_context_data(**kwargs)
+	# 	context['stocks'] = format_stock_info(Portfolio.objects.first().stocks)
+	# 	context['yo'] = lambda: datetime.now().strftime('%H:%M:%S')
+	# 	return context
+
+class PortfolioDetailView(DetailView):
+	model = Portfolio
+
+class PortfolioCreateView(LoginRequiredMixin, CreateView):
+	model = Portfolio
+	fields = ['portfolio_name', 'stocks']
+
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		return super().form_valid(form)
+
+class PortfolioUpdateView(UpdateView):
+	model = Portfolio
+	fields = ['portfolio_name', 'stocks']
+
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		return super().form_valid(form)
+
+	def test_func(self):
+		post = self.get_object()
+		if self.request.user == post.author:
+			return True
+		return False
+
+class PortfolioDeleteView(DeleteView):
+	model = Portfolio
+	success_url = '/'
+	
+	def test_func(self):
+		post = self.get_object()
+		if self.request.user == post.author:
+			return True
+		return False
 
 def about(request):
 	return render(request, 'stocktracker/about.html')

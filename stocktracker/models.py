@@ -1,6 +1,8 @@
-from django.db.models import CASCADE, CharField, ForeignKey, Model
+from django.db.models import CASCADE, CharField, ForeignKey, Model, DateTimeField
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import User
+from django.utils import timezone
+from django.urls import reverse
 
 class Portfolio(Model):
 	# inherits all the methods from models.Model
@@ -11,12 +13,18 @@ class Portfolio(Model):
 		size=50,
 		max_length = (50 * 11)
 	)
+	date_posted = DateTimeField(default=timezone.now)
 	author = ForeignKey(User, on_delete=CASCADE)
 
 	def __str__(self):
 		return f'{self.portfolio_name} ({len(self.stocks)} Symbols)'
 
+	def get_absolute_url(self):
+		# go back to the urls.py, look for 'portfolio-detail', pass in the 'pk' to get the specific url with self.pk
+		return reverse('portfolio-detail', kwargs={'pk': self.pk})
+
 """
+Do these two commands whenever you modify the models
 python manage.py makemigrations
 python manage.py migrate
 

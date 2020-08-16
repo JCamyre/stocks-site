@@ -6,7 +6,7 @@
 	<h1>{{ user.username }}</h1>
 	{% for portfolio in portfolios %}
 		<h2>{{ portfolio.portfolio_name }}</h2>
-		{% for stock in portfolio.stocks|stocks_from_portfolio %}
+		{% for stock in portfolio|stocks_from_portfolio %}
 			<h3 style='line-height: 20px'>{{ stock.stock_ticker }}</h3>		
 			<p class="article-content" style='font-size: 18px; line-height: 20px'>{% if stock.current_percentage >= 0 %}Price: <span style='color: green'>${{ stock.current_price|floatformat:2 }}</span> 
 				Current Percentage: <span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 				
@@ -16,5 +16,4 @@
 			</p>
 		{% endfor %}
 	{% endfor %}
-
 {% endblock content %}

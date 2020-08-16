@@ -1,0 +1,30 @@
+{% extends 'stocktracker/base.html' %}
+{% load tags %}
+{% block content %}
+	<article class="media content-section">
+	  <div class="media-body">
+	    <div class="article-metadata">
+	      <a class="mr-2" href="#">{{ object.author }}</a>
+	      <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+	      {% if object.author == user %}
+	      	<div>
+		      	<a class='btn btn-secondary btn-sm mt-1 mb-1' href="{% url 'portfolio-update' object.id %}">Update</a>
+		      	<a class='btn btn-danger btn-sm mt-1 mb-1' href="{% url 'portfolio-delete' object.id %}">Delete</a>	      		
+	      	</div>
+	      {% endif %}
+	    </div>
+	    <h2 class="article-title">{{ object.portfolio_name }}</h2>
+	    <div>
+			{% for stock in portfolio|stocks_from_portfolio %}
+				<h3 style='line-height: 20px'>{{ stock.stock_ticker }}</h3>		
+				<p class="article-content" style='font-size: 18px; line-height: 20px'>{% if stock.current_percentage >= 0 %}Price: <span style='color: green'>${{ stock.current_price|floatformat:2 }}</span> 
+					Current Percentage: <span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 				
+				{% else %}Price: <span style='color: red'>${{ stock.current_price|floatformat:2 }}</span> 
+					Current Percentage: <span style='color: red'>{{ stock.current_percentage|floatformat:2 }}%</span> 
+				{% endif %}
+				</p>
+			{% endfor %}	    	
+	    </div>
+	  </div>
+	</article>
+{% endblock content %}
