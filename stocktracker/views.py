@@ -7,25 +7,16 @@ from .models import Portfolio
 
 # After you login, loop through your stock tickers using format_stock_info to get the stock info on each
 
-def home(request):
-	# If stocks trigger a signal, add it to the list. Updates the site every whatever time. 
-	context = {
-		'stocks': format_stock_info(Portfolio.objects.first().stocks),
-		'yo': lambda: datetime.now().strftime('%H:%M:%S')
-	}
-	return render(request, 'stocktracker/home.html', context)
-
 class PortfolioListView(ListView):
 	model = Portfolio
 	template_name = 'stocktracker/home.html'
 	context_object_name = 'portfolio'
 	ordering = ['-date_posted']
 
-	# def get_context_data(self, **kwargs):
-	# 	context = super().get_context_data(**kwargs)
-	# 	context['stocks'] = format_stock_info(Portfolio.objects.first().stocks)
-	# 	context['yo'] = lambda: datetime.now().strftime('%H:%M:%S')
-	# 	return context
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['yo'] = lambda: datetime.now().strftime('%H:%M:%S')
+		return context
 
 class PortfolioDetailView(DetailView):
 	model = Portfolio

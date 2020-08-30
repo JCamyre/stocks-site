@@ -5,15 +5,22 @@
 	<!-- Don't have to import user, Django itself has this variable for the current logged-in user -->
 	<h1>{{ user.username }}</h1>
 	{% for portfolio in portfolios %}
-		<h2>{{ portfolio.portfolio_name }}</h2>
-		{% for stock in portfolio|stocks_from_portfolio %}
-			<h3 style='line-height: 20px'>{{ stock.stock_ticker }}</h3>		
-			<p class="article-content" style='font-size: 18px; line-height: 20px'>{% if stock.current_percentage >= 0 %}Price: <span style='color: green'>${{ stock.current_price|floatformat:2 }}</span> 
-				Current Percentage: <span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 				
-			{% else %}Price: <span style='color: red'>${{ stock.current_price|floatformat:2 }}</span> 
-				Current Percentage: <span style='color: red'>{{ stock.current_percentage|floatformat:2 }}%</span> 
-			{% endif %}
-			</p>
-		{% endfor %}
+		<article class="media content-section">
+			<div class="media-body">
+			    <div class="article-metadata"> 
+			    	<!-- Passes the stock_portfolio.id as <int:pk> -->
+					<h2><a href="{% url 'portfolio-detail' portfolio.id %}">{{ portfolio.portfolio_name }}</a></h2>
+					{% for stock in portfolio|stocks_from_portfolio %}
+						<h3 style='line-height: 20px'>{{ stock.stock_ticker }}</h3>		
+						<p class="article-content" style='font-size: 18px; line-height: 20px'>{% if stock.current_percentage >= 0 %}Price: <span style='color: green'>${{ stock.current_price|floatformat:2 }}</span> 
+							Current Percentage: <span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 				
+						{% else %}Price: <span style='color: red'>${{ stock.current_price|floatformat:2 }}</span> 
+							Current Percentage: <span style='color: red'>{{ stock.current_percentage|floatformat:2 }}%</span> 
+						{% endif %}
+						</p>
+					{% endfor %}
+				</div>
+			</div>
+		</article>
 	{% endfor %}
 {% endblock content %}

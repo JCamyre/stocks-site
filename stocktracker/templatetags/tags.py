@@ -8,6 +8,7 @@ def stocks_from_portfolio(portfolio):
 	'''
 	'portfolio' would be the Portfolio model
 	'''
+	print('stocks_from_portfolio', portfolio.stocks)
 	return format_stock_info(portfolio.stocks)
 
 # Add the methods for turning a Portfolio into a list of stocks with all of its values

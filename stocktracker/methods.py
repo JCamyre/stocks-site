@@ -9,17 +9,16 @@ from django import template
 
 register = template.Library()
 
-def format_stock_info(*tickers):
+def format_stock_info(tickers):
 	stocks = []
-	for stock_ticker in pytrading.Portfolio(tickers):
+	for stock_ticker in pytrading.Portfolio(tickers, '1m', '1d'):
 		stock = {}
-		cur_stats = stock_ticker.df_month.iloc[-1]
-		prev_stats = stock_ticker.df_month.iloc[-2]
+		cur_stats = stock_ticker.df.iloc[-1]
 		stock['stock_ticker'] = stock_ticker.ticker
 		stock['current_price'] = cur_stats['Close']
-		stock['current_percentage'] = ((cur_stats['Close'] - prev_stats['Close'])/prev_stats['Close'])*100
-		stock['high_percentage'] = ((cur_stats['High'] - prev_stats['Close'])/prev_stats['Close'])*100
-		stock['low_percentage'] = ((cur_stats['Low'] - prev_stats['Close'])/prev_stats['Close'])*100
+		stock['current_percentage'] = ((cur_stats['Close'] - stock_ticker.prev_close)/stock_ticker.prev_close)*100
+		stock['high_percentage'] = ((cur_stats['High'] - stock_ticker.prev_close)/stock_ticker.prev_close)*100
+		stock['low_percentage'] = ((cur_stats['Low'] - stock_ticker.prev_close)/stock_ticker.prev_close)*100
 		stocks.append(stock)
 	return stocks
 
