@@ -1,2 +1,2 @@
 # Stocks-Site
-A web app containsingmany useful features for stock traders.
+A web app containing many useful features for stock traders.
