@@ -56,7 +56,7 @@ class PortfolioDeleteView(DeleteView): # Deleting a portfolio
 class SearchResultsView(ListView):
 	model = Stock
 	template_name = 'search_results.html'
-	queryset = Stock.objects.filter(name__icontains='CLO')
+	queryset = Stock.objects.filter(ticker__icontains='CLO')
 
 def about(request):
 	return render(request, 'stocktracker/about.html')
