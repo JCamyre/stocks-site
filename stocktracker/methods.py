@@ -29,7 +29,7 @@ def get_trending_stocks():
 		trending_stocks(a)
 	return stocks
 
-# How to make the code run every 90 s
+# How to make the code run every 90 s?
 
 # Template filters https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#howto-custom-template-tags
 # I'll do it later
