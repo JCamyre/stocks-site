@@ -28,17 +28,18 @@ class Portfolio(Model):
 # for a ticker, they find the object in the database and it is automatically update
 # Or is it better for whenever the ticker is searched, the stock object is initialized
 
+# I should automate creating objects for all S&P 500 + NASDAQ + NYSE
 class Stock(Model):
 	# Stores all information for a stock (including the due diligence)
 	# Change to only ticker Charfield, then in the views search results do all the functions?
 	ticker = CharField(max_length=5)
 
 	def due_diligence(self): # Is this better than a variable named due_diligence = lambda _: stock_obj.due_diligence()
-		self.stock_obj = py_trd.Stock(ticker.)
+		stock_obj = py_trd.Stock(self.ticker)
 		return stock_obj.due_diligence()
 
 	def __str__(self):
-		return '$' + ticker
+		return '$' + self.ticker
 
 	# Should I use get_absolute_url()?
 
