@@ -4,9 +4,9 @@
 <h1>Search Results</h1>
 
 <ul>
-    {% for stock in object_list %} 
+    {% for stock in object_list %} <!-- object_list is actually stocktracker_stock, name of app + lower case of our model -->
         <li>
-            {{ stock.ticker }}, {{ stock.due_diligence() }}
+            {{ stock.ticker }}
         </li>
     {% endfor %}
 </ul>

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 from datetime import datetime
 from .methods import format_stock_info
 from .models import Portfolio, Stock
@@ -55,8 +56,12 @@ class PortfolioDeleteView(DeleteView): # Deleting a portfolio
 
 class SearchResultsView(ListView):
 	model = Stock
-	template_name = 'search_results.html'
-	queryset = Stock.objects.filter(ticker__icontains='CLO') # ticker__icontains very useful
+	template_name = 'stocktracker/search_results.html'
+
+	def get_queryset(self): # Now I can modify the returned list of stock objects
+		return Stock.objects.filter(
+			Q(ticker__icontains='CLO') | Q(ticker__icontains='SU') # ticker__icontains very useful
+		)
 
 def about(request):
 	return render(request, 'stocktracker/about.html')
