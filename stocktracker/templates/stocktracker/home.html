@@ -10,6 +10,7 @@
 		<article class="media content-section">
 			<div class="media-body">
 			    <div class="article-metadata"> 
+				<!-- Change from link to yahoo finance to link for individual stock page w/ due diligence -->
 			    <h3 class="article-title mr-2"><a href="https://finance.yahoo.com/quote/{{ stock.stock_ticker }}" target='_blank'>{{ stock.stock_ticker }}</a>: ${{ stock.current_price|floatformat:2 }}</h3>
 				<p class="article-content" style='font-size: 18px; line-height: 20px'>Current: {% if stock.current_percentage >= 0 %}
 					<span style='color: green'>{{ stock.current_percentage|floatformat:2 }}%</span> 
