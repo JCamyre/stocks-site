@@ -8,20 +8,20 @@ from .models import Portfolio
 # After you login, loop through your stock tickers using format_stock_info to get the stock info on each
 
 class PortfolioListView(ListView):
-	model = Portfolio
-	template_name = 'stocktracker/home.html'
-	context_object_name = 'portfolio'
-	ordering = ['-date_posted']
+	model = Portfolio # Specify what model to be displayed 
+	template_name = 'stocktracker/home.html' # Specify which template to be displayed
+	context_object_name = 'portfolio' # Specify variable name to refer to model in template 'home.html'
+	ordering = ['-date_posted'] # Specify the ordering of items in object, sort by descending 'date_posted'
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['yo'] = lambda: datetime.now().strftime('%H:%M:%S')
+		context['yo'] = lambda: datetime.now().strftime('%H:%M:%S') # In the template, refer to {{ yo }} to get datetime.now(). Don't have to do context.yo
 		return context
 
-class PortfolioDetailView(DetailView):
+class PortfolioDetailView(DetailView): # When you click on a portfolio
 	model = Portfolio
 
-class PortfolioCreateView(LoginRequiredMixin, CreateView):
+class PortfolioCreateView(LoginRequiredMixin, CreateView): # Creating a portfolio
 	model = Portfolio
 	fields = ['portfolio_name', 'stocks']
 
@@ -29,7 +29,7 @@ class PortfolioCreateView(LoginRequiredMixin, CreateView):
 		form.instance.author = self.request.user
 		return super().form_valid(form)
 
-class PortfolioUpdateView(UpdateView):
+class PortfolioUpdateView(UpdateView): # Updating a portfolio
 	model = Portfolio
 	fields = ['portfolio_name', 'stocks']
 
@@ -43,7 +43,7 @@ class PortfolioUpdateView(UpdateView):
 			return True
 		return False
 
-class PortfolioDeleteView(DeleteView):
+class PortfolioDeleteView(DeleteView): # Deleting a portfolio
 	model = Portfolio
 	success_url = '/'
 	

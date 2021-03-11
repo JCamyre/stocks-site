@@ -4,3 +4,10 @@ Each user has their portfolios with their # shares and what they got in at so li
 Use check marks to select which signals you want to detect
 
 A last 30 min chart
+
+Use https://dc-js.github.io/dc.js/ for graphs and such
+
+Use react js for ui
+
+INTRA day signals: high volitality, rsi drop/spike, break out (above 9sma, above 180sma, last three tickers green? on 1 minute chart)
+

@@ -9,4 +9,5 @@ urlpatterns = [
 	path('portfolio/<int:pk>/update/', PortfolioUpdateView.as_view(), name='portfolio-update'),
 	path('portfolio/<int:pk>/delete/', PortfolioDeleteView.as_view(), name='portfolio-delete'),
 	path('about/', views.about, name='stocktracker-about'),
+	path('search/', , name='search_results')
 ]

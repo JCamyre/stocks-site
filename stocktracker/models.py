@@ -3,6 +3,7 @@ from django_mysql.models import ListCharField
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+import py_trading as py_trd
 
 class Portfolio(Model):
 	# inherits all the methods from models.Model
@@ -22,6 +23,20 @@ class Portfolio(Model):
 	def get_absolute_url(self):
 		# go back to the urls.py, look for 'portfolio-detail', pass in the 'pk' to get the specific url with self.pk
 		return reverse('portfolio-detail', kwargs={'pk': self.pk})
+
+# The real question: Is it more efficient to set up the stocks and store them in a database. Whenever a user searches
+# for a ticker, they find the object in the database and it is automatically update
+# Or is it better for whenever the ticker is searched, the stock object is initialized
+
+class Stock(Model):
+	# Stores all information for a stock (including the due diligence)
+	ticker = Charfield(max_length=5)
+	due_diligence = py_trd.Stock(ticker).due_diligence()
+
+	def __str__(self):
+		return '$' + ticker
+
+	# Should I use get_absolute_url()?
 
 """
 Do these two commands whenever you modify the models

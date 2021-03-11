@@ -1,0 +1,3 @@
+The new automatic due diligence application. 
+
+How to start server: "python manage.py runserver"
