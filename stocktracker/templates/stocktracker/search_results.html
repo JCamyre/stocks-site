@@ -1,5 +1,13 @@
 {% extends 'stocktracker/base.html' %}
 {% load tags %}
 {% block content %} 
+<h1>Search Results</h1>
 
+<ul>
+    {% for stock in object_list %} 
+        <li>
+            {{ stock.ticker }}, {{ stock.due_diligence() }}
+        </li>
+    {% endfor %}
+</ul>
 {% endblock content %} 
