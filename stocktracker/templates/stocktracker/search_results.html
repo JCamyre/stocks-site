@@ -4,7 +4,7 @@
 <h1>Search Results</h1>
 
 <ul>
-    {% for stock in object_list %} <!-- object_list is actually stocktracker_stock, name of app + lower case of our model -->
+    {% for stock in list %} <!-- object_list is actually stocktracker_stock, name of app + lower case of our model -->
         <li>
             {{ stock.ticker }}
         </li>
