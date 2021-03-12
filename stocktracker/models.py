@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
 import py_trading as py_trd
+from py_trd.live_trading import get_nasdaq, get_nyse
 
 class Portfolio(Model):
 	# inherits all the methods from models.Model
@@ -52,5 +53,14 @@ python manage.py shell
 from stocktracker.models import Portfolio
 from django.contrib.auth.models import User
 
-user.portfolio_set.create(portfolio_name='First_Portfolio', stocks=['BNGO', 'OPGN', 'NBY'])
+User.portfolio_set.create(portfolio_name='First_Portfolio', stocks=['BNGO', 'OPGN', 'NBY'])
 """
+
+# Add all NYSE and NASDAQ tickers (S&P have stocks from these two stockmarkets)
+# I think their are repeats
+
+for ticker in get_nasdaq():
+	Stock.objects.create(ticker=ticker)
+
+for ticker in get_nyse():
+	Stock.objects.create(ticker=ticker)
