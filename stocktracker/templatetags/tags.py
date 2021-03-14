@@ -1,6 +1,6 @@
 from django import template
 from stocktracker.methods import format_stock_info
-
+# templatetags vs static/tags?
 register = template.Library()
 
 @register.filter(name='stocks_from_portfolio')
