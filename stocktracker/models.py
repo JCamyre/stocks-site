@@ -69,3 +69,8 @@ def add_stocks(): # Only run if you need to reset the Stock objects
 def delete_all_stocks():
 	Stock.objects.all().delete()
 
+# def drop_table(self):
+#     cursor = connection.cursor()
+#     table_name = self.model._meta.db_table
+#     sql = "DROP TABLE %s;" % (table_name, )
+#     cursor.execute(sql)

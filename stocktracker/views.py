@@ -14,7 +14,7 @@ class PortfolioListView(ListView):
 	context_object_name = 'portfolio' # Specify variable name to refer to model in template 'home.html'
 	ordering = ['-date_posted'] # Specify the ordering of items in object, sort by descending 'date_posted'
 
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs): # Creating new context objects to access in the template
 		context = super().get_context_data(**kwargs)
 		context['yo'] = lambda: datetime.now().strftime('%H:%M:%S') # In the template, refer to {{ yo }} to get datetime.now(). Don't have to do context.yo
 		return context
@@ -59,9 +59,10 @@ class SearchResultsView(ListView):
 	template_name = 'stocktracker/search_results.html'
 
 	def get_queryset(self): # Now I can modify the returned list of stock objects
-		return Stock.objects.filter(
-			Q(ticker__icontains='CLO') | Q(ticker__icontains='SU') # ticker__icontains very useful
-		)
+		# return Stock.objects.filter(
+		# 	Q(ticker__icontains='TTM') | Q(ticker__icontains='TSM') # ticker__icontains very useful
+		# )
+		return Stock.objects.all()[:10]
 
 def about(request):
 	return render(request, 'stocktracker/about.html')
