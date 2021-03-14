@@ -6,6 +6,9 @@ from django import template
 
 register = template.Library()
 
+def due_diligence(stock): # stock is a py_trading.Stock() object
+	return stock.due_diligence()
+
 def format_stock_info(tickers):
 	stocks = []
 	for stock_ticker in py_trading.Portfolio(tickers, '1m', '1d'):

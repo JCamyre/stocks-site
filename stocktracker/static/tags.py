@@ -1,11 +1,15 @@
 from django import template
-from .methods import stocks_from_portfolio
+from .methods import stocks_from_portfolio, due_diligence
 
 register = template.Library()
 
 @register.filter(name='stocks_from_portfolio')
-def stocks_from_portfolio(value):
+def stocks_from_portfolio(portfolio):
 	'''
-	'value' would be the Portfolio object
+	'portfolio' would be the Portfolio object
 	'''
-	return format_stock_info(value)
+	return format_stock_info(portfolio)
+
+@register.fiter(name='stock_due_diligence')
+def stock_due_diligence(stock):
+	return due_diligence(stock)
