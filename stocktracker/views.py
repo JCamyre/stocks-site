@@ -64,6 +64,9 @@ class SearchResultsView(ListView):
 			Q(ticker__icontains=query) # ticker__icontains very useful
 		)
 		
+class StockDetailView(DetailView):
+	model = Stock
+	# Run the Stock.due_diligence() in the template
 
 def about(request):
 	return render(request, 'stocktracker/about.html')
