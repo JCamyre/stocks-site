@@ -3,6 +3,9 @@
 {% block content %}
   	<h1>Stock Tracker</h1>
   	<p>{{ yo }}</p>
+	<form action="{% url 'search_results' %}" method='get'>
+		<input name='ticker' type='text' placeholder='Enter a ticker...'>
+	</form>
   	{% for stock_portfolio in portfolio|get_all_portfolios %}
   		<h2><a href="{% url 'portfolio-detail' stock_portfolio.id %}">{{ stock_portfolio.portfolio_name }}</a></h2>
   		<h3>{{ stock_portfolio.author }}</h3>

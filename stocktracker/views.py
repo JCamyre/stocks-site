@@ -59,10 +59,11 @@ class SearchResultsView(ListView):
 	template_name = 'stocktracker/search_results.html'
 
 	def get_queryset(self): # Now I can modify the returned list of stock objects
-		# return Stock.objects.filter(
-		# 	Q(ticker__icontains='TTM') | Q(ticker__icontains='TSM') # ticker__icontains very useful
-		# )
-		return Stock.objects.all()[:10]
+		query = self.request.GET.get('ticker') # get the GET request data for ticker?=
+		return Stock.objects.filter(
+			Q(ticker__icontains=query) # ticker__icontains very useful
+		)
+		
 
 def about(request):
 	return render(request, 'stocktracker/about.html')
