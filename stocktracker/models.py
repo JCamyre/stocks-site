@@ -42,6 +42,9 @@ class Stock(Model):
 	def __str__(self):
 		return '$' + self.ticker
 
+	def get_absolute_url(self):
+		return reverse('stock_detail.html', kwargs={'pk': self.pk})
+
 	# Should I use get_absolute_url()?
 
 """
@@ -75,8 +78,8 @@ def delete_duplicate_stocks():
 	for stock in list(unique_tickers):
 		duplicates = Stock.objects.filter(ticker=stock)
 		if duplicates.count() > 1:
-			[duplicate.delete() for duplicate in duplicates[1:]]
-			print(duplicates)
+			[type(duplicate) for duplicate in duplicates[1:]]
+			# print(duplicates)
 			
 
 delete_duplicate_stocks()
