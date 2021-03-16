@@ -71,10 +71,13 @@ def delete_all_stocks():
 
 def delete_duplicate_stocks():
 	all_stocks = Stock.objects.all()
-	for stock in all_stocks:
-		duplicates = Stock.objects.filter(ticker=stock.ticker)
+	unique_tickers = set([stock.ticker for stock in all_stocks])
+	for stock in list(unique_tickers):
+		duplicates = Stock.objects.filter(ticker=stock)
 		if duplicates.count() > 1:
-			stock.delete()
+			[duplicate.delete() for duplicate in duplicates[1:]]
+			print(duplicates)
+			
 
 delete_duplicate_stocks()
 
