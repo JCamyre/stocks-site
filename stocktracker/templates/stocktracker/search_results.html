@@ -6,7 +6,7 @@
 <ul>
     {% for stock in object_list %} <!-- object_list is default context name for the list of objects from get_queryset() method in ListView's -->
         <li>
-            {{ stock.ticker }}
+            <a href="{% url 'stock-detail' stock.ticker %}">{{ stock.ticker }}</a>
         </li>
     {% endfor %}
 </ul>

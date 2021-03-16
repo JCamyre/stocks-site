@@ -10,4 +10,7 @@ urlpatterns = [
 	path('portfolio/<int:pk>/delete/', PortfolioDeleteView.as_view(), name='portfolio-delete'),
 	path('about/', views.about, name='stocktracker-about'),
 	path('search/', views.SearchResultsView.as_view(), name='search_results')
+	path('stock/<str:ticker>', views.StockDetailView.as_view())
 ]
+# Make unique path('stock/<str:ticker>'), will I think possible.
+# def get_absolute_url(self): kwargs={'ticker': self.ticker}

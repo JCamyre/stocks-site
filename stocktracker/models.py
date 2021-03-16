@@ -43,7 +43,7 @@ class Stock(Model):
 		return '$' + self.ticker
 
 	def get_absolute_url(self):
-		return reverse('stock_detail.html', kwargs={'pk': self.pk})
+		return reverse('stock_detail.html', kwargs={'ticker': self.ticker})
 
 	# Should I use get_absolute_url()?
 
