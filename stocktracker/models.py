@@ -69,7 +69,17 @@ def add_stocks(): # Only run if you need to reset the Stock objects
 def delete_all_stocks():
 	Stock.objects.all().delete()
 
-# .pk is still unique id
+def delete_duplicate_stocks():
+	all_stocks = Stock.objects.all()
+	for stock in all_stocks:
+		duplicates = Stock.objects.filter(ticker=stock.ticker)
+		if duplicates.count() > 1:
+			stock.delete()
+
+delete_duplicate_stocks()
+
+
+# .id works for accessing a Stock's unique id
 
 # def drop_table(self):
 #     cursor = connection.cursor()
