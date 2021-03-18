@@ -75,9 +75,6 @@ def delete_all_stocks():
 	Stock.objects.all().delete()
 
 
-add_stocks()
-print('done')
-
 def delete_duplicate_stocks():
 	all_stocks = Stock.objects.all()
 	unique_tickers = set([stock.ticker for stock in all_stocks])
