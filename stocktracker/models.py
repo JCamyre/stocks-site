@@ -1,4 +1,4 @@
-from django.db.models import CASCADE, CharField, ForeignKey, Model, DateTimeField
+from django.db.models import CASCADE, CharField, ForeignKey, Model, DateTimeField, SlugField
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -34,6 +34,7 @@ class Stock(Model):
 	# Stores all information for a stock (including the due diligence)
 	# Change to only ticker Charfield, then in the views search results do all the functions?
 	ticker = CharField(max_length=5)
+	slug = SlugField(ticker, max_length=5)
 
 	def due_diligence(self): # Is this better than a variable named due_diligence = lambda _: stock_obj.due_diligence()
 		stock_obj = py_trd.Stock(self.ticker)
@@ -43,7 +44,7 @@ class Stock(Model):
 		return '$' + self.ticker
 
 	def get_absolute_url(self):
-		return reverse('stock_detail.html', kwargs={'ticker': self.ticker})
+		return reverse('stock_detail.html', kwargs={'slug': self.slug})
 
 	# Should I use get_absolute_url()?
 
@@ -63,14 +64,18 @@ User.portfolio_set.create(portfolio_name='First_Portfolio', stocks=['BNGO', 'OPG
 # Do I need to run the migrations? No, Stock.objects.create() does it for us.
 
 def add_stocks(): # Only run if you need to reset the Stock objects
-	for ticker in get_nasdaq()['Ticker']:
-		Stock.objects.create(ticker=ticker)
+	# for ticker in get_nasdaq()['Ticker']:
+	# 	Stock.objects.create(ticker=ticker)
 
 	for ticker in get_nyse()['Code']:
 		Stock.objects.create(ticker=ticker)
 
 def delete_all_stocks():
 	Stock.objects.all().delete()
+
+# delete_all_stocks()
+# add_stocks()
+# print('done')
 
 def delete_duplicate_stocks():
 	all_stocks = Stock.objects.all()
@@ -81,9 +86,6 @@ def delete_duplicate_stocks():
 			[type(duplicate) for duplicate in duplicates[1:]]
 			# print(duplicates)
 			
-
-delete_duplicate_stocks()
-
 
 # .id works for accessing a Stock's unique id
 
