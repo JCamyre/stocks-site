@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from datetime import datetime
 from .methods import format_stock_info
-from .models import Portfolio, Stock
+from .models import Portfolio, Stock, delete_all_stocks
 
 # After you login, loop through your stock tickers using format_stock_info to get the stock info on each
 

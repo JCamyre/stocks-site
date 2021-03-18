@@ -34,7 +34,7 @@ class Stock(Model):
 	# Stores all information for a stock (including the due diligence)
 	# Change to only ticker Charfield, then in the views search results do all the functions?
 	ticker = CharField(max_length=5)
-	slug = SlugField(ticker, max_length=5)
+	slug = SlugField(max_length=5, default=ticker)
 
 	def due_diligence(self): # Is this better than a variable named due_diligence = lambda _: stock_obj.due_diligence()
 		stock_obj = py_trd.Stock(self.ticker)
@@ -43,15 +43,16 @@ class Stock(Model):
 	def __str__(self):
 		return '$' + self.ticker
 
-	def get_absolute_url(self):
-		return reverse('stock_detail.html', kwargs={'slug': self.slug})
+	# def get_absolute_url(self):
+	# 	return reverse('stock_detail.html', kwargs={'slug': self.slug})
 
 	# Should I use get_absolute_url()?
 
 """
-Do these two commands whenever you modify the models
+Do these two commands whenever you modify the models (so edit code, save, then run the commands)
 python manage.py makemigrations
 python manage.py migrate
+(Do I have to run these when I run add_stocks()? I am adding new objects to database.)
 
 python manage.py shell
 from stocktracker.models import Portfolio
@@ -73,9 +74,9 @@ def add_stocks(): # Only run if you need to reset the Stock objects
 def delete_all_stocks():
 	Stock.objects.all().delete()
 
-# delete_all_stocks()
-# add_stocks()
-# print('done')
+
+add_stocks()
+print('done')
 
 def delete_duplicate_stocks():
 	all_stocks = Stock.objects.all()
