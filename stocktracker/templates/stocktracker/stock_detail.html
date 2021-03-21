@@ -2,6 +2,9 @@
 {% extends 'stocktracker/base.html' %}
 {% load tags %}
 {% block content %}
-    {{ object|stock_due_diligence }}
+    <!-- ETF's -->
+    {% for row in object|stock_due_diligence %}
+        {{ row['Stockholder'] }}
+    {% endfor %}
 {% endblock content %}
 
