@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html class="is-not-authenticated is-not-pro is-not-trial" dir="ltr" lang="en">
+<head>
+<script nonce="5cEijKdgxONMpcGS">
+		var environment = 'battle';
+		window.WS_HOST_PING_REQUIRED = true;
+		window.BUILD_TIME = '2021_03_19-12_05';
+		window.WEBSOCKET_HOST = 'data.tradingview.com';
+		window.WEBSOCKET_PRO_HOST = 'prodata.tradingview.com';
+		window.TradingView = window.TradingView || {};
+
+	</script>
+<script nonce="5cEijKdgxONMpcGS">
+		!function(){"use strict";var t,e=function(){return(e=Object.assign||function(t){for(var e,n=1,o=arguments.length;n<o;n++)for(var s in e=arguments[n])Object.prototype.hasOwnProperty.call(e,s)&&(t[s]=e[s]);return t}).apply(this,arguments)};!function(t){t[t.Text=1]="Text",t[t.Binary=2]="Binary"}(t||(t={}));var n=function(){},o="~m~",s=function(){function s(t,n){void 0===n&&(n={}),this.sessionid=null,this.connected=!1,this._timeout=null,this._base=t,this._websocketType=t.options.websocketType,this._options=e({timeout:6e4},n)}return s.prototype.switchWebsocketMode=function(t){this._binFrame=new Uint8Array([126,109,126]),this._websocketType=t,this._socket.binaryType="arraybuffer"},s.prototype.connect=function(){var t=this;this._socket=new WebSocket(this._prepareUrl()),this._socket.onmessage=function(e){t._onData(e.data)},this._socket.onclose=this._onClose.bind(this),this._socket.onerror=this._onError.bind(this)},s.prototype.send=function(e){this._socket&&this._socket.send(this._websocketType===t.Binary?this._binEncode(e):this._encode(e))},s.prototype.disconnect=function(){this._clearIdleTimeout(),this._socket&&(this._socket.onmessage=n,this._socket.onclose=n,this._socket.onerror=n,this._socket.close())},s.prototype.usesCompression=function(){return(this._socket.extensions||"").split(",").some((function(t){var e=t.split(";",1)[0].trim();return"permessage-deflate"===e||"x-webkit-deflate-frame"===e}))},s.prototype._clearIdleTimeout=function(){null!==this._timeout&&(clearTimeout(this._timeout),this._timeout=null)},s.prototype._encode=function(t){for(var e,n="",i=Array.isArray(t)?t:[t],r=i.length,c=0;c<r;c++)e=null===i[c]||void 0===i[c]?"":s._stringify(i[c]),n+=o+e.length+o+e;return n},s.prototype._binEncode=function(t){for(var e=Array.isArray(t)?t:[t],n=e.length,o=0;o<n;o++)e[o]=null===e[o]||void 0===e[o]?"":e[o],e[o]="string"==typeof e[o]?s._str2ab(e[o]):e[o];var i=new Uint8Array(0);for(o=0;o<n;o++){var r=this._binEncodeMessage(e[o]),c=new Uint8Array(i.length+r.length);c.set(i,0),c.set(r,i.byteLength),i=c}return i},s.prototype._binEncodeMessage=function(t){var e=s._str2ab(t.byteLength.toString()),n=3+e.length+3+t.byteLength,o=new Uint8Array(n),i=0;return o.set(this._binFrame,i),i+=this._binFrame.length,o.set(e,i),i+=e.length,o.set(this._binFrame,i),i+=this._binFrame.length,o.set(new Uint8Array(t),i),i+=t.length,o},s.prototype._decode=function(t){var e,n,s=[];do{if(t.substr(0,3)!==o)return s;e="",n="";for(var i=(t=t.substr(3)).length,r=0;r<i;r++){if(n=Number(t.substr(r,1)),Number(t.substr(r,1))!==n){t=t.substr(e.length+o.length),e=Number(e);break}e+=n}s.push(t.substr(0,e)),t=t.substr(e)}while(""!==t);return s},s.prototype._onData=function(e){var n;this._setTimeout(),this._websocketType===t.Binary?n=function(t){for(var e=0,n=[],o=t.length;e<o;){if(e+3>o)throw new Error("Invalid buffer length");if(126!==t[e]||109!==t[e+1]||126!==t[e+2])throw new Error("Malformed ~m~ signature");e+=3;for(var s=0;e<o;e++){var i=t[e]-48;if(i<0||i>9)break;s=10*s+i}if(s+e+3>o)throw new Error("Invalid buffer length");if(126!==t[e]||109!==t[e+1]||126!==t[e+2])throw new Error("Malformed ~m~ signature");e+=3,n.push(t.subarray(e,e+s)),e+=s}return n}(new Uint8Array(e)):this._websocketType===t.Text&&(n=this._decode(e));var o=n.length;if(n&&n.length)for(var s=0;s<o;s++)this._onMessage(n[s])},s.prototype._setTimeout=function(){this._clearIdleTimeout(),this._timeout=setTimeout(this._onTimeout.bind(this),this._options.timeout)},s.prototype._onTimeout=function(){this.disconnect(),this._onDisconnect({code:4e3,reason:"socket.io timeout",wasClean:!1})},s.prototype._onMessage=function(e){this.sessionid?this._checkIfHeartbeat(e)?this._onHeartbeat(this._websocketType===t.Binary?e.subarray(3):e.slice(3)):this._checkIfJson(e)?this._base.onMessage(JSON.parse(e.slice(3))):this._base.onMessage(e):(this.sessionid=e,this._onConnect())},s.prototype._checkIfHeartbeat=function(t){return this._checkMessageType(t,"h")},s.prototype._checkIfJson=function(t){return this._checkMessageType(t,"j")},s.prototype._checkMessageType=function(e,n){if(this._websocketType===t.Binary){var o=n.charCodeAt(0);if(126===e[0]&&e[1]===o&&126===e[2])return!0}else if(this._websocketType===t.Text&&e.substr(0,3)==="~"+n+"~")return!0;return!1},s.prototype._onHeartbeat=function(e){var n=this._websocketType===t.Binary?s._ab2str(e):e;this.send("~h~"+n)},s.prototype._onConnect=function(){this.connected=!0,this._base.onConnect()},s.prototype._onDisconnect=function(t){this._clear(),this._base.onDisconnect(t),this.sessionid=null},s.prototype._clear=function(){this.connected=!1},s.prototype._prepareUrl=function(){return"wss://"+this._base.host+"/socket.io/websocket"+(this.sessionid?"/"+this.sessionid:"")+"?from="+encodeURIComponent(window.location.pathname.slice(1,50))+"&date="+encodeURIComponent(window.BUILD_TIME||"")+(t="any",e=new URL(String(location)).searchParams,("new"===t||"any"===t)&&"true"===e.get("mobileapp_new")||"new"!==t&&"true"===e.get("mobileapp")?"&client=mobile":"");var t,e},s.prototype._onClose=function(t){this._clearIdleTimeout(),this._onDisconnect(t)},s.prototype._onError=function(t){this._clearIdleTimeout(),this._clear(),this._base.emit("error",[t]),this.sessionid=null},s._stringify=function(t){return"[object Object]"===Object.prototype.toString.call(t)?"~j~"+JSON.stringify(t):String(t)},s._str2ab=function(t){for(var e=new Uint8Array(t.length),n=0;n<t.length;n++)e[n]=t.charCodeAt(n);return e},s._ab2str=function(t){for(var e="",n=0;n<=t.length-1;n++)e+=String.fromCharCode(t[n]);return e},s}(),i=function(){function t(t,n){this.host=t,this.options=e({connectTimeout:5e3,tryTransportsOnConnectTimeout:!0},n),this._connecting=!1,this._events={},this.transport=this._getTransport()}return t.prototype.isConnected=function(){return!!this.transport&&this.transport.connected},t.prototype.isConnecting=function(){return this._connecting},t.prototype.connect=function(){this.isConnected()||(this._connecting&&this.disconnect(),this._connecting=!0,this.transport.connect())},t.prototype.send=function(t){this.transport&&this.transport.connected&&this.transport.send(t)},t.prototype.disconnect=function(){this.transport&&this.transport.disconnect()},t.prototype.on=function(t,e){t in this._events||(this._events[t]=[]),this._events[t].push(e)},t.prototype.offAll=function(){this._events={}},t.prototype.onMessage=function(t){this.emit("message",[t])},t.prototype.emit=function(t,e){if(void 0===e&&(e=[]),t in this._events)for(var n=this._events[t].concat(),o=n.length,s=0;s<o;s++)n[s].apply(this,e)},t.prototype.onConnect=function(){this.clear(),this.emit("connect")},t.prototype.onDisconnect=function(t){this.emit("disconnect",[t])},t.prototype.clear=function(){this._connecting=!1},t.prototype._getTransport=function(){return new s(this)},t}(),r=Number(window.TELEMETRY_WS_ERROR_LOGS_THRESHOLD)||0;var c=function(){function e(t,e){void 0===e&&(e={}),this._queueStack=[],this._logsQueue=[],this._telemetryObjectsQueue=[],this._reconnectCount=0,this._redirectCount=0,this._errorsCount=0,this._errorsInfoSent=!1,this._reconnectTimeout=null,this._onlineCancellationToken=null,this._initialHost=e.initialHost||null,this._suggestedHost=t,this._proHost=e.proHost,this._reconnectHost=e.reconnectHost,this._doConnect(),e.pingRequired&&-1===window.location.search.indexOf("noping")&&this._startPing()}return e.prototype.connect=function(){this._tryConnect()},e.prototype.resetCounters=function(){this._reconnectCount=0,this._redirectCount=0},e.prototype.setLogger=function(t,e){this._logger=t,this._getLogHistory=e,this._flushLogs()},e.prototype.setTelemetry=function(t){this._telemetry=t,this._telemetry.reportSent.subscribe(this,this._onTelemetrySent),this._flushTelemetry()},e.prototype.onReconnect=function(t){this._onReconnect=t},e.prototype.isConnected=function(){return!!this._socket&&this._socket.isConnected()},e.prototype.isConnecting=function(){return!!this._socket&&this._socket.isConnecting()},e.prototype.on=function(t,e){return!!this._socket&&("connect"===t&&this._socket.isConnected()?e():"disconnect"===t?this._disconnectCallbacks.push(e):this._socket.on(t,e),!0)},e.prototype.getSessionId=function(){return this._socket&&this._socket.transport?this._socket.transport.sessionid:null},e.prototype.send=function(t){return this.isConnected()?(this._socket.send(t),!0):(this._queueMessage(t),!1)},e.prototype.switchWebsocketMode=function(t){return!(!this._socket||!this._socket.transport)&&(this._socket.transport.switchWebsocketMode(t),!0)},e.prototype.getConnectionDuration=function(){return Date.now()-this._connectionStart},e.prototype.getHost=function(){var t=this._tryGetProHost();return null!==t?t:this._reconnectHost&&this._reconnectCount>3?this._reconnectHost:this._suggestedHost},e.prototype.getReconnectCount=function(){return this._reconnectCount},e.prototype.getRedirectCount=function(){return this._redirectCount},e.prototype.getConnectionStart=function(){return this._connectionStart},e.prototype.disconnect=function(){this._clearReconnectTimeout(),(this.isConnected()||this.isConnecting())&&(this._propagateDisconnect(),this._disconnectCallbacks=[],this._closeSocket())},e.prototype.isMaxRedirects=function(){return this._redirectCount>=20},e.prototype.isMaxReconnects=function(){return this._reconnectCount>=20},e.prototype.getPingInfo=function(){return this._pingInfo||null},e.prototype.usesCompression=function(){return null!==this._socket&&this._socket.transport.usesCompression()},e.prototype._tryGetProHost=function(){return window.TradingView&&window.TradingView.onChartPage&&"battle"===window.environment&&!this._redirectCount&&-1===window.location.href.indexOf("ws_host")?this._initialHost?this._initialHost:void 0!==window.user&&window.user.pro_plan?this._proHost||this._suggestedHost:null:null},e.prototype._queueMessage=function(t){0===this._queueStack.length&&this._logMessage(0,"Socket is not connected. Queued a message"),this._queueStack.push(t)},e.prototype._processMessageQueue=function(){0!==this._queueStack.length&&(this._logMessage(0,"Processing queued messages"),this._queueStack.forEach(this.send.bind(this)),this._logMessage(0,"Processed "+this._queueStack.length+" messages"),this._queueStack=[])},e.prototype._onDisconnect=function(t){null===this._reconnectTimeout&&(this._reconnectTimeout=setTimeout(this._tryReconnect.bind(this),5e3)),this._clearOnlineCancellationToken();var e="disconnect session:"+this.getSessionId();t&&(e+=", code:"+t.code+", reason:"+t.reason),this._logMessage(0,e),this._propagateDisconnect(t),this._closeSocket(),this._queueStack=[]},e.prototype._closeSocket=function(){null!==this._socket&&(this._socket.offAll(),this._socket.disconnect(),this._socket=null)},e.prototype._logMessage=function(t,e){var n={method:t,message:e};this._logger?this._flushLogMessage(n):(n.message="["+(new Date).toISOString()+"] "+n.message,this._logsQueue.push(n))},e.prototype._flushLogMessage=function(t){switch(t.method){case 2:this._logger.logDebug(t.message);break;case 3:this._logger.logError(t.message);break;case 0:this._logger.logInfo(t.message);break;case 1:this._logger.logNormal(t.message)}},e.prototype._flushLogs=function(){var t=this;this._flushLogMessage({method:1,message:"messages from queue. Start."}),this._logsQueue.forEach((function(e){t._flushLogMessage(e)})),this._flushLogMessage({method:1,message:"messages from queue. End."}),this._logsQueue=[]},e.prototype._sendTelemetry=function(t,e){var n={event:t,params:e};this._telemetry?this._flushTelemetryObject(n):this._telemetryObjectsQueue.push(n)},e.prototype._flushTelemetryObject=function(t){this._telemetry.sendChartReport(t.event,t.params,!1)},e.prototype._flushTelemetry=function(){var t=this;this._telemetryObjectsQueue.forEach((function(e){t._flushTelemetryObject(e)})),this._telemetryObjectsQueue=[]},e.prototype._doConnect=function(){this._socket&&(this._socket.isConnected()||this._socket.isConnecting())||(this._clearOnlineCancellationToken(),this._host=this.getHost(),this._socket=new i(this._host,{websocketType:t.Text}),this._logMessage(0,"Connecting to "+this._host),this._bindEvents(),this._disconnectCallbacks=[],this._connectionStart=Date.now(),this._socket.connect())},e.prototype._propagateDisconnect=function(t){for(var e=this._disconnectCallbacks.length,n=0;n<e;n++)this._disconnectCallbacks[n](t||{})},e.prototype._bindEvents=function(){var t=this;this._socket&&(this._socket.on("connect",(function(){var e=t.getSessionId();if("string"==typeof e){var n=JSON.parse(e);if(n.redirect)return t._redirectCount+=1,t._suggestedHost=n.redirect,t.isMaxRedirects()&&t._sendTelemetry("redirect_bailout"),void t._redirect()}t._processMessageQueue(),t._logMessage(0,"connect session:"+e)})),this._socket.on("disconnect",this._onDisconnect.bind(this)),this._socket.on("close",this._onDisconnect.bind(this)),this._socket.on("error",(function(e){t._logMessage(0,new Date+" session:"+t.getSessionId()+" websocket error:"+JSON.stringify(e)),t._sendTelemetry("websocket_error"),t._errorsCount++,!t._errorsInfoSent&&t._errorsCount>=r&&(void 0!==t._lastConnectCallStack&&(t._sendTelemetry("websocket_error_connect_stack",{text:t._lastConnectCallStack}),delete t._lastConnectCallStack),void 0!==t._getLogHistory&&t._sendTelemetry("websocket_error_log",{text:t._getLogHistory(50).join("\n")}),t._errorsInfoSent=!0)})))},e.prototype._redirect=function(){this.disconnect(),this._reconnectWhenOnline()},e.prototype._tryReconnect=function(){this._tryConnect()&&(this._reconnectCount+=1)},e.prototype._tryConnect=function(){return this._clearReconnectTimeout(),this._lastConnectCallStack=new Error("WebSocket connect stack. Is connected: "+this.isConnected()+".").stack||"",!this.isConnected()&&(this.disconnect(),this._reconnectWhenOnline(),!0)},e.prototype._clearOnlineCancellationToken=function(){this._onlineCancellationToken&&(this._onlineCancellationToken(),this._onlineCancellationToken=null)},e.prototype._clearReconnectTimeout=function(){null!==this._reconnectTimeout&&(clearTimeout(this._reconnectTimeout),this._reconnectTimeout=null)},e.prototype._reconnectWhenOnline=function(){var t,e,n=this;if(navigator.onLine)return this._logMessage(0,"Network status: online - trying to connect"),this._doConnect(),void(this._onReconnect&&this._onReconnect());this._logMessage(0,"Network status: offline - wait until online"),this._onlineCancellationToken=(t=function(){n._logMessage(0,"Network status changed to online - trying to connect"),n._doConnect(),n._onReconnect&&n._onReconnect()},e=function(){window.removeEventListener("online",e),t&&t()},window.addEventListener("online",e),function(){t=null})},e.prototype._onTelemetrySent=function(t){"websocket_error"in t&&(this._errorsCount=0,this._errorsInfoSent=!1)},e.prototype._startPing=function(){var t=this;if(!this._pingIntervalId){var e=window.location.protocol+"//"+this.getHost()+"/ping",n=0,o=0;this._pingIntervalId=setInterval((function(){var s=(new Date).getTime(),i=new XMLHttpRequest;i.open("GET",e,!0),i.send(),i.onreadystatechange=function(){i.readyState===XMLHttpRequest.DONE&&200===i.status&&function(e){t._pingInfo=t._pingInfo||{max:0,min:1/0,avg:0};var s=(new Date).getTime()-e;s>t._pingInfo.max&&(t._pingInfo.max=s),s<t._pingInfo.min&&(t._pingInfo.min=s),n+=s,o++,t._pingInfo.avg=n/o,o>=10&&t._pingIntervalId&&(clearInterval(t._pingIntervalId),delete t._pingIntervalId)}(s)}}),1e4)}},e}();window.WSBackendConnection=new c(window.WEBSOCKET_HOST,{pingRequired:window.WS_HOST_PING_REQUIRED,proHost:window.WEBSOCKET_PRO_HOST,reconnectHost:window.WEBSOCKET_HOST_FOR_RECONNECT,initialHost:window.WEBSOCKET_INITIAL_HOST}),window.WSBackendConnectionCtor=c}();
+	</script>
+<meta charset="utf-8"/>
+<meta content="1205990992" property="al:ios:app_store_id"/>
+<meta content="TradingView - trading community, charts and quotes" property="al:ios:app_name"/>
+<title>Technical Analysis of CHURCHILL CAPITAL CORP IV (NYSE:CCIV) — TradingView</title>
+<meta content="Which technical analysis tools can be used to analyze CHURCHILL CAPITAL CORP IV? Check out various oscillators, moving averages and other technical indicators on TradingView." name="description"/>
+<meta content="TradingView" property="og:site_name"/><meta content="website" property="og:type"/><meta content="Technical Analysis of CHURCHILL CAPITAL CORP IV (NYSE:CCIV) — TradingView" property="og:title"/><meta content="Which technical analysis tools can be used to analyze CHURCHILL CAPITAL CORP IV? Check out various oscillators, moving averages and other technical indicators on TradingView." property="og:description"/><meta content="https://www.tradingview.com/symbols/NYSE-CCIV/technicals/" property="og:url"/><meta content="https://www.tradingview.com/static/images/logo-v-1200x630.png" property="og:image"/><meta content="630" property="og:image:height"/><meta content="1200" property="og:image:width"/><meta content="https://www.tradingview.com/static/images/logo-v-1200x630.png" property="og:image:secure_url"/>
+<meta content="@TradingView" name="twitter:site"/><meta content="summary" name="twitter:card"/><meta content="Technical Analysis of CHURCHILL CAPITAL CORP IV (NYSE:CCIV) — TradingView" name="twitter:title"/><meta content="Which technical analysis tools can be used to analyze CHURCHILL CAPITAL CORP IV? Check out various oscillators, moving averages and other technical indicators on TradingView." name="twitter:description"/><meta content="https://www.tradingview.com/symbols/NYSE-CCIV/technicals/" name="twitter:url"/><meta content="https://www.tradingview.com/static/images/logo-v-1200x630.png" name="twitter:image"/><meta content="IE=100" http-equiv="X-UA-Compatible"/>
+<link data-locale="en" href="https://www.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="en" rel="alternate link-locale"/><link data-locale="uk" href="https://uk.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="en-gb" rel="alternate link-locale"/><link data-locale="in" href="https://in.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="en-in" rel="alternate link-locale"/><link data-locale="de_DE" href="https://de.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="de" rel="alternate link-locale"/><link data-locale="fr" href="https://fr.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="fr" rel="alternate link-locale"/><link data-locale="es" href="https://es.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="es" rel="alternate link-locale"/><link data-locale="it" href="https://it.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="it" rel="alternate link-locale"/><link data-locale="pl" href="https://pl.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="pl" rel="alternate link-locale"/><link data-locale="sv_SE" href="https://se.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="sv" rel="alternate link-locale"/><link data-locale="tr" href="https://tr.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="tr" rel="alternate link-locale"/><link data-locale="ru" href="https://ru.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="ru" rel="alternate link-locale"/><link data-locale="br" href="https://br.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="pt" rel="alternate link-locale"/><link data-locale="id" href="https://id.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="id" rel="alternate link-locale"/><link data-locale="ms_MY" href="https://my.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="ms" rel="alternate link-locale"/><link data-locale="th_TH" href="https://th.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="th" rel="alternate link-locale"/><link data-locale="vi_VN" href="https://vn.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="vi" rel="alternate link-locale"/><link data-locale="ja" href="https://jp.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="ja" rel="alternate link-locale"/><link data-locale="kr" href="https://kr.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="ko" rel="alternate link-locale"/><link data-locale="zh_CN" href="https://cn.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="zh-cn" rel="alternate link-locale"/><link data-locale="zh_TW" href="https://tw.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="zh-tw" rel="alternate link-locale"/><link data-locale="ar_AE" href="https://ar.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="ar" rel="alternate link-locale"/><link data-locale="he_IL" href="https://il.tradingview.com/symbols/NYSE-CCIV/technicals/" hreflang="he" rel="alternate link-locale"/>
+<link href="https://s3.amazonaws.com" rel="dns-prefetch"/>
+<link href="https://www.tradingview.com/symbols/NYSE-CCIV/technicals/" rel="canonical"/>
+<meta content="index, follow" name="robots"/>
+<meta content="f729ff74def35be4b9b92072c0e995b40fcb9e1aece03fb174343a1b7a5350ce" name="ahrefs-site-verification"/>
+<script type="application/ld+json">
+	{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"url": "https://www.tradingview.com",
+		"logo": "https://www.tradingview.com/static/images/logo-151x151.png",
+		"name" : "TradingView",
+		"sameAs" : ["https://www.facebook.com/tradingview/",
+					"https://twitter.com/tradingview/",
+					"https://www.youtube.com/channel/UCfOflihrkOKDQZ_ZKtF2VfQ/",
+					"https://www.linkedin.com/company/tradingview/"]
+	}
+</script> <script type="application/ld+json">{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://www.tradingview.com/markets/",
+        "name": "Markets"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://www.tradingview.com/markets/stocks-usa/market-movers-large-cap/",
+        "name": "US Stocks"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@id": "https://www.tradingview.com/markets/stocks-usa/sectorandindustry-sector/finance/",
+        "name": "Finance"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "item": {
+        "@id": "https://www.tradingview.com/markets/stocks-usa/sectorandindustry-industry/financial-conglomerates/",
+        "name": "Financial Conglomerates"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "item": {
+        "@id": "https://www.tradingview.com/symbols/NYSE-CCIV/",
+        "name": "CCIV"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 6,
+      "item": {
+        "@id": "https://www.tradingview.com/symbols/NYSE-CCIV/technicals/",
+        "name": "Technicals"
+      }
+    }
+  ]
+}</script>
+<script type="application/ld+json">
+				{
+					"@context": "http://schema.org",
+					"@type": "Corporation",
+						"tickerSymbol": "CCIV",
+						"name": "CHURCHILL CAPITAL CORP IV"
+							,"description": "Churchill Capital Corp. IV engages in operation of a blank check firm. The firm was formed for the purpose of effecting a merger, capital stock exchange, asset acquisition, stock purchase, reorganization or similar business combination with one or more businesses. The company was founded by Michael Klein and is headquartered in New York, NY."
+				}
+			</script>
+<link href="/static/images/favicon.ico" rel="shortcut icon"/>
+<meta content="skype_toolbar_parser_compatible" name="skype_toolbar"/>
+<meta content="TradingView" name="application-name"/>
+<meta content="https://www.tradingview.com/chart/" name="msapplication-starturl"/>
+<meta content="name=Trading Ideas; action-uri=https://www.tradingview.com/; icon-uri=/static/images/favicon.ico" name="msapplication-task"/>
+<meta content="/static/images/favicon/browserconfig.xml" name="msapplication-config"/>
+<link color="#37a6ef" href="/static/images/favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+<meta content="telephone=no" name="format-detection"/>
+<link href="/static/images/favicon/manifest.json" rel="manifest"/>
+<meta content="#262b3e" name="theme-color"/>
+<meta content="TradingView Site" name="apple-mobile-web-app-title"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+<link href="/static/images/favicon/apple-touch-icon-57x57.png" rel="apple-touch-icon" sizes="57x57"/>
+<link href="/static/images/favicon/apple-touch-icon-60x60.png" rel="apple-touch-icon" sizes="60x60"/>
+<link href="/static/images/favicon/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72"/>
+<link href="/static/images/favicon/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76"/>
+<link href="/static/images/favicon/apple-touch-icon-114x114.png" rel="apple-touch-icon" sizes="114x114"/>
+<link href="/static/images/favicon/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120"/>
+<link href="/static/images/favicon/apple-touch-icon-144x144.png" rel="apple-touch-icon" sizes="144x144"/>
+<link href="/static/images/favicon/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152"/>
+<link href="/static/images/favicon/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" name="viewport"/>
+<script nonce="5cEijKdgxONMpcGS">
+	window.locale = 'en';
+	window.language = 'en';
+
+	// Because of a problem of displaying vietnamese symbols with `font-weight: bold;` TV-10989
+	if (window.locale === 'vi_VN') {
+		document.documentElement.classList.add('font-VI-lang-safe');
+	}
+</script>
+<script charset="utf-8" crossorigin="anonymous" defer="" src="/static/localization/translations/en.e4cfca74499b8fa3.js"></script>
+<script crossorigin="anonymous" defer="" src="/static/bundles/runtime.bb5f7188960d5a0e2068.js" type="text/javascript"></script>
+<script crossorigin="anonymous" defer="" src="/static/bundles/vendors.6c3039078a2e1d1da9e2.js" type="text/javascript"></script>
+<link href="/static/bundles/category.0b30feeb72e943fbc5d4.css" rel="stylesheet" type="text/css"/>
+<link href="/static/bundles/technicals.d8337dc1527b12e5b6b4.css" rel="stylesheet" type="text/css"/>
+<link href="/static/bundles/print.fa37e5dcc54c351361d6.css" media="print" rel="stylesheet" type="text/css"/>
+<script nonce="5cEijKdgxONMpcGS">
+			window.initData = window.initData || {};
+			window.initData.url = "/symbols/NYSE-CCIV/technicals/";
+			window.initData.liveStreams = {};
+
+window.initData.feed_meta = {};
+window.initData.symbolInfo = {"short_description":"CHURCHILL CAPITAL CORP IV","exchange":"NYSE","exchange_for_display":"NYSE","provider_id":"ice","currency":"USD","resolved_symbol":"NYSE:CCIV","is_spread":false,"typespecs":["common"],"has_fundamentals":true,"root":null,"type":"stock","description":"CHURCHILL CAPITAL CORP IV","country":"us","local_description":"CHURCHILL CAPITAL CORP IV","timezone":"America/New_York","short_name":"CCIV","flag":"us","pro_symbol":"NYSE:CCIV","language":"en"};		</script>
+<script crossorigin="anonymous" defer="" src="/static/bundles/category.99f9ba9679ce6e5967e1.js" type="text/javascript"></script>
+<script crossorigin="anonymous" defer="" src="/static/bundles/technicals.12a73a5cd460c6a520e5.js" type="text/javascript"></script>
+<script nonce="5cEijKdgxONMpcGS">
+var is_authenticated = false;
+var user = {"username":"Guest","following":"0","followers":"0","ignore_list":{},"available_offers":{}};		window.initData = window.initData || {};
+		window.initData.api_host = 'payflowlink.paypal.com';
+		window.initData.price_alerts_url = '//alerts.tradingview.com/alerts/';
+		window.initData.screener_alerts_base_url = '//scanner-alerts.tradingview.com/screener_alerts/';
+		window.initData.currentLocaleInfo = {"language":"en","language_name":"English","flag":"us","geoip_code":"us","priority":1000,"is_site_locale":true,"iso":"en","iso_639_3":"eng","show_on_widgets":true,"name_on_widgets":"English","global_name":"English","is_only_recommended_tw_autorepost":true};
+
+		window.initData.settings = {'S3_LOGO_SERVICE_BASE_URL': 'https://s3-symbol-logo.tradingview.com/', 'WEBPACK_STATIC_PATH': '/static/bundles/'};
+
+
+			window.__initialEnabledFeaturesets =
+				(window.__initialEnabledFeaturesets || []).concat(
+					 ['tv_production']
+				);
+
+		window.WEBPACK_PUBLIC_PATH = '/static/bundles/';
+
+			var lastGlobalNotificationIds = [7346,7343,7339,7336,7304,7250,7248,7206,7200,7165,7162];
+
+			var stocktwits_consumer_key = 'bb07af71824f3372';
+
+		var shopConf = {
+			offers: [],
+		};
+
+		var featureToggleState = {"black_friday_popup":0.0,"black_friday_mainpage":0.0,"show_top_authors_at_main_page":0.0,"hide_top_authors_at_feed_ideas":1.0,"people_page_disabled":1.0,"show_live_streams_on_main_page":1.0,"ir_locale_enabled":0.0,"il_locale_enabled":1.0,"chart_autosave_2min":0.0,"chart_autosave_3min":0.0,"chart_autosave_5min":0.0,"chart_autosave_7min":0.0,"chart_autosave_10min":1.0,"chart_autosave_20min":0.0,"chart_autosave_30min":0.0,"chart_autosave_year":0.0,"disable_save_settings":0.0,"charts_storage_support":1.0,"remove_line_tools_from_content":0.0,"allow_apostrophe_in_symbol_token":1.0,"allow_inserting_images":0.0,"allow_multiple_accounts_IBKR":0.0,"paperrest_2fa":0.0,"broker_ALOR":1.0,"broker_ALOR_dev":0.0,"broker_ALPACA":1.0,"broker_ALPACA_dev":0.0,"broker_CURRENCYCOM":1.0,"broker_CURRENCYCOM_dev":0.0,"broker_FOREXCOM":1.0,"broker_FXCM":1.0,"broker_FXCM_dev":0.0,"broker_FXCM_token_v2":1.0,"broker_GEMINI":1.0,"broker_GEMINI_dev":0.0,"broker_HITBTC":1.0,"broker_IBROKER":1.0,"broker_IBROKER_dev":0.0,"broker_MODAL":0.0,"broker_MODAL_dev":0.0,"broker_OANDA":1.0,"broker_PAPERREST":0.0,"broker_POLONIEX":0.0,"broker_SAXOBANK":1.0,"broker_SAXOBANK_dev":0.0,"broker_TRADESTATION":1.0,"broker_TRADESTATION_V3":1.0,"broker_TRADESTATION_V3_dev":0.0,"broker_TRADOVATE":1.0,"broker_TRADOVATE_dev":0.0,"broker_WHSELFINVEST":1.0,"broker_IRONBEAM":1.0,"broker_CAPITALCOM":1.0,"broker_CAPITALCOM_dev":0.0,"broker_DUMMY":0.0,"broker_IBKR":0.0,"broker_IBKR_dev":0.0,"broker_TIGER":1.0,"broker_TIGER_dev":0.0,"oanda-maintenance":0.0,"forexcom-maintenance":0.0,"paper-maintenance":0.0,"amp-maintenance":0.0,"alpaca-maintenance":0.0,"cqg-maintenance":0.0,"gemini-maintenance":0.0,"ibroker-maintenance":0.0,"saxobank-maintenance":0.0,"tradovate-maintenance":0.0,"poloniex-maintenance":0.0,"tradestation-maintenance":0.0,"fxcm-maintenance":0.0,"hitbtc-maintenance":0.0,"whselfinvest-maintenance":0.0,"alor-maintenance":0.0,"modal-maintenance":0.0,"currencycom-maintenance":0.0,"ironbeam-maintenance":0.0,"tiger-maintenance":0.0,"capitalcom-maintenance":0.0,"ibkr-maintenance":0.0,"oanda-brokers-side-maintenance":0.0,"forexcom-brokers-side-maintenance":0.0,"paper-brokers-side-maintenance":0.0,"amp-brokers-side-maintenance":0.0,"alpaca-brokers-side-maintenance":0.0,"cqg-brokers-side-maintenance":0.0,"gemini-brokers-side-maintenance":0.0,"ibroker-brokers-side-maintenance":0.0,"saxobank-brokers-side-maintenance":0.0,"tradovate-brokers-side-maintenance":0.0,"poloniex-brokers-side-maintenance":0.0,"tradestation-brokers-side-maintenance":0.0,"fxcm-brokers-side-maintenance":0.0,"hitbtc-brokers-side-maintenance":0.0,"whselfinvest-brokers-side-maintenance":0.0,"alor-brokers-side-maintenance":0.0,"modal-brokers-side-maintenance":0.0,"currencycom-brokers-side-maintenance":0.0,"ironbeam-brokers-side-maintenance":0.0,"capitalcom-brokers-side-maintenance":0.0,"tiger-brokers-side-maintenance":0.0,"ibkr-brokers-side-maintenance":0.0,"trading-fast-renew-oauth-token":0.0,"new-broker-verifier":1.0,"oanda_europe":1.0,"details_disable_bid_ask":0.0,"alerts-maintenance":0.0,"alerts-send-extra-update":1.0,"alerts-send-gen-alert-data":0.0,"hide_true_sms_alerts":1.0,"stop_app_push_alerts":0.0,"CSP_protection_random":1.0,"chart_style_hilo":0.0,"check_chat_rep_all_locales":1.0,"disable_sentry":0.0,"disable_idea_spam_filter":1.0,"disable_obs_streaming":1.0,"disable_recaptcha_on_signup":0.0,"disable_statsd_views_metrics":0.0,"timeout_django_db":0.15,"timeout_django_charts_db":0.0,"timeout_django_symbols_lists_db":0.0,"enable_signin_recaptcha":1.0,"force_signin_recaptcha":0.0,"enable_inactive_users_cleanup":1.0,"evercookie_cancel_subscription":1.0,"fake_sms_backend":0.0,"financials_button":1.0,"futures-descriptions":1.0,"google-ads":1.0,"google-one-tap-signin":1.0,"braintree-trial-implementation":0.1,"hide_FXCM_on_CFD_pages":1.0,"hide_authorize_financials":1.0,"hide-copy-readonly":0.0,"hide_esd_on_some_intervals":1.0,"hide_exchange_in_inputs":1.0,"hide_interval_exchange_legend":1.0,"idc_agreement_disabled":0.0,"idc_delay_agreement_disabled":0.0,"lower_legend_collapser":1.0,"marked_symbols_enabled":1.0,"marketing-analytics":1.0,"marketing_email_checkbox":1.0,"mobile_show_bottom_panel":0.0,"modal_suspend":1.0,"news_separate_tab_enabled":1.0,"perf-timings":0.0,"platform-ads-rotation":1.0,"prohibit_trial_for_duplicates":1.0,"protobuf-maintenance":0.0,"remove-line-tool-ghost-feed":0.0,"replay_on_seconds":1.0,"review_popup_on_chart":1.0,"rude_ideas":1.0,"save_all_charts_in_layout":1.0,"screener-alerts-maintenance":0.0,"screener-maintenance":0.0,"seconds_bars":1.0,"server-side-countdown":1.0,"ses_tracking":1.0,"short_descriptions":0.0,"short_descriptions_site":1.0,"show_offline_bar":1.0,"show_top_by_categories":0.0,"hide_top_by_scripts_and_symbols":0.0,"slow-support-warning":1.0,"trading_button":0.0,"trial-users-support":0.0,"streams_widget_enabled":1.0,"save-short-streams":0.0,"streams_minimode_tooltip":1.0,"sphinx_top_by_categories_enabled":1.0,"stocks-earnings-calendar-maintenance":0.0,"streams_enabled":1.0,"streams_live_notifications":1.0,"studies-vp-session-volume-2":1.0,"suspicious_chart_snapshots_detection":0.0,"switching_trial_year_to_month_disabled":0.0,"switching_year_to_month_disabled":0.0,"timeline":1.0,"timeline_translations":0.0,"tvcoins_donations":1.0,"tvcoins_comment_donations":1.0,"twilio_messaging_service":1.0,"unauth-header-trial-button":0.0,"unsubscribe_inactive_users":1.0,"vat_disabled":1.0,"youtube_repost":1.0,"youtube-restream":1.0,"pro_plan_upgrades_disabled":0.0,"pro_plan_downgrades_disabled":0.0,"daily_donations_limit":1.0,"offer_last_chance_disabled":0.0,"offer_one_usd_disabled":0.0,"offer_three_months_disabled":1.0,"video-ideas-new-api":1.0,"enable_non_unique_watch_sections":1.0,"disable_colored_lists":1.0,"hasoffers_signup_stats":0.0,"hasoffers_trial_stats":0.0,"check_card_details_on_trial":1.0,"fail_on_duplicate_payment_methods_for_trial":1.0,"remove_wrap_text_legend":1.0,"hide_dup_users_ideas":0.0,"hide_suspicious_users_ideas":1.0,"new_date_range":0.0,"disable_publish_strategy_range_based_chart":1.0,"currency_conversion":0.01,"hide_gopro_popup_upgrade_button":1.0,"yandex_metric_enabled":0.0,"broker_id_session":0.0,"show_financials_tab":0.0};
+	</script>
+<script nonce="5cEijKdgxONMpcGS">
+	window.initData = window.initData || {};
+
+	window.initData.snowplowSettings = {
+		collectorId: 'tv_cf',
+		url: 'snowplow-pixel.tradingview.com',
+		params: {
+			appId: 'tradingview',
+		},
+		enabled: true,
+	}
+</script>
+<script nonce="5cEijKdgxONMpcGS">
+		window.PUSHSTREAM_URL = 'wss://pushstream.tradingview.com';
+		window.ANT_MEDIA_URLS = {"NA":"https://tv-live-stream-us.tradingview.com","EU":"https://tv-live-stream-eu.tradingview.com"};
+		window.ANT_SERVER_URL = 'tv-stream.tradingview.com';
+		window.TV_LIVE_URL = 'tv-live.tradingview.com';
+		window.TV_LIVE_MEDIA_URL = 'https://tv-live-storage-us.tradingview.com';
+		window.RECORD_MEDIA_URL = 'https://tv-recorder-storage-us.tradingview.com';
+		window.CHARTEVENTS_URL = 'https://chartevents-reuters.tradingview.com/';
+		window.EARNINGS_CALENDAR_URL = '//scanner.tradingview.com';
+		window.NEWS_SERVICE_URL = '//news-headlines.tradingview.com';
+		window.SS_HOST = 'symbol-search.tradingview.com';
+		window.SS_URL = '';
+		window.SS_DOMAIN_PARAMETER = 'production';
+		window.DEFAULT_SYMBOL = 'NASDAQ:AAPL';
+		window.COUNTRY_CODE_TO_DEFAULT_EXCHANGE = {"en":"US","us":"NASDAQ","ae":"DFM","ar":"BCBA","au":"ASX","be":"EURONEXTBRU","bh":"BAHRAIN","br":"BMFBOVESPA","ca":"TSX","ch":"SIX","cl":"BCS","zh_CN":"SSE","co":"BVC","de_DE":"FWB","dk":"OMXCOP","ee":"OMXTSE","eg":"EGX","es":"BME","fi":"OMXHEX","fr":"EURONEXT_PAR","hk":"HKEX","id":"IDX","il":"TASE","in":"BSE","is":"OMXICE","it":"MIL","ja":"TSE","kr":"KRX","lt":"OMXVSE","lv":"OMXRSE","mx":"BMV","ms_MY":"MYX","ng":"NSENG","nl":"EURONEXT_AMS","no":"OSL","nz":"NZX","pe":"BVL","pl":"GPW","pt":"EURONEXT_LIS","qa":"QSE","rs":"BELEX","ru":"MOEX","ar_AE":"TADAWUL","sv_SE":"OMXSTO","sg":"SGX","th_TH":"SET","tr":"BIST","zh_TW":"TWSE","uk":"LSE","vi_VN":"HOSE","za":"JSE"};
+		window.HOTLISTS_URL = 'https://hotlist.tradingview.com/';
+		window.SCREENER_HOST = 'https://scanner.tradingview.com';
+
+			window.DATA_ISSUES_HOST = 'https://support-middleware.tradingview.com';
+
+		window.TELEMETRY_HOSTS = {"charts":{"free":"//telemetry.tradingview.com/free","pro":"//telemetry.tradingview.com/pro","widget":"//telemetry.tradingview.com/widget"},"alerts":{"all":"//telemetry.tradingview.com/alerts"},"news":{"all":"//telemetry.tradingview.com/news"},"pine":{"all":"//telemetry.tradingview.com/pine"},"calendars":{"all":"//telemetry.tradingview.com/calendars"},"site":{"free":"//telemetry.tradingview.com/site-free","pro":"//telemetry.tradingview.com/site-pro","widget":"//telemetry.tradingview.com/site-widget"},"trading":{"all":"https://telemetry.tradingview.com/trading"}};
+		window.TELEMETRY_WS_ERROR_LOGS_THRESHOLD = '100';
+		window.TELEMETRY_SERVER_TIME_DIFF_THRESHOLD = '3000';
+		window.RECAPTCHA_SITE_KEY = '6Lcqv24UAAAAAIvkElDvwPxD0R8scDnMpizaBcHQ';
+		window.RECAPTCHA_SITE_KEY_V3 = '6LeQMHgUAAAAAKCYctiBGWYrXN_tvrODSZ7i9dLA';
+		window.GOOGLE_CLIENT_ID = '236720109952-v7ud8uaov0nb49fk5qm03as8o7dmsb30.apps.googleusercontent.com';
+
+		window.PINE_URL = '//pine-facade.tradingview.com/pine-facade';
+	</script>
+</head>
+<body class="search-page index-page">
+<script nonce="5cEijKdgxONMpcGS">
+(function(){
+	var frame = null;
+	var fn = function() {
+		var offsetWidth = document.body.offsetWidth;
+		var offsetWidthPadded = offsetWidth - parseFloat(document.body.style.paddingRight || 0); 		document.body.classList[offsetWidth > 1576 ? 'add' : 'remove']('popup-wide');
+		document.body.classList[offsetWidthPadded > 1530 ? 'add' : 'remove']('page-wide');
+		frame = null;
+	}
+	var fnRaf = function() {
+		if (frame === null) {
+			frame = window.requestAnimationFrame(fn);
+		}
+	};
+	fn();
+	window.addEventListener('resize', fnRaf, false);
+})();
+</script>
+<div class="widgetbar-place"></div>
+<div class="tv-main">
+<div class="js-container-android-notification"></div>
+<div class="js-container-ios-notification"></div>
+<div class="tv-header tv-header__top tv-header--sticky">
+<div class="tv-header__inner tv-layout-width">
+<article class="js-tv-expected-language tv-expected-language js-hidden"></article>
+<div class="tv-header__area tv-header__area--left tv-header__area--desktop">
+<a class="tv-header__link tv-header__link--logo" href="/"><span class="tv-header__icon tv-header__icon--logo"><svg height="19" viewbox="0 0 33 19" width="33" xmlns="http://www.w3.org/2000/svg"><path d="M29.032 7.382a5.47 5.47 0 0 1 .963 2.872A4.502 4.502 0 0 1 28.5 19H6a5.98 5.98 0 0 1-4.222-1.737l9.546-7.556c.35.187.75.293 1.176.293a2.49 2.49 0 0 0 1.066-.238l4.55 3.981a2.5 2.5 0 1 0 4.711-.157l6.205-6.204zm-1.414-1.414l-6.204 6.204A2.494 2.494 0 0 0 20.5 12a2.49 2.49 0 0 0-1.066.238l-4.55-3.981a2.5 2.5 0 1 0-4.801-.118L.608 15.638A6 6 0 0 1 6.061 7a8.001 8.001 0 0 1 15.625-1.227A5.474 5.474 0 0 1 24.5 5c1.157 0 2.231.358 3.118.968z" fill="#2196F3"></path></svg></span><span class="tv-header__logo-text">TradingView</span></a>
+<span class="tv-header__dropdown--global-notifications tv-dropdown-behavior tv-header__dropdown"> </span>
+<form action="/change_language/" class="js-lang-form js-lang-dropdown tv-dropdown-behavior tv-header__dropdown tv-header__dropdown--lang" data-adapt-body="True" data-adapt-only-in-scroll-height="True" data-scroll="True" method="POST">
+<input name="language" type="hidden" value=""/>
+<span class="tv-header__dropdown-wrap tv-header__dropdown-wrap--noarrow tv-dropdown-behavior__button">
+<span class="tv-header__lang-icon tv-header__lang-icon--current-lang">EN</span>
+</span>
+<span class="tv-dropdown-behavior__body i-hidden tv-header__dropdown-body js-lang-dropdown-list-desktop"></span>
+</form>
+</div>
+<div class="tv-header__area tv-header__area--device">
+<div class="tv-header__logo-menu js-device-menu-btn js-device-menu-btn--center" data-device-menu-id="center">
+<span class="tv-header__logo-menu-inner">
+<span class="tv-header__icon tv-header__icon--logo"><svg height="19" viewbox="0 0 33 19" width="33" xmlns="http://www.w3.org/2000/svg"><path d="M29.032 7.382a5.47 5.47 0 0 1 .963 2.872A4.502 4.502 0 0 1 28.5 19H6a5.98 5.98 0 0 1-4.222-1.737l9.546-7.556c.35.187.75.293 1.176.293a2.49 2.49 0 0 0 1.066-.238l4.55 3.981a2.5 2.5 0 1 0 4.711-.157l6.205-6.204zm-1.414-1.414l-6.204 6.204A2.494 2.494 0 0 0 20.5 12a2.49 2.49 0 0 0-1.066.238l-4.55-3.981a2.5 2.5 0 1 0-4.801-.118L.608 15.638A6 6 0 0 1 6.061 7a8.001 8.001 0 0 1 15.625-1.227A5.474 5.474 0 0 1 24.5 5c1.157 0 2.231.358 3.118.968z" fill="#2196F3"></path></svg></span>
+<span class="tv-header__logo-menu-text">TradingView</span>
+<span class="tv-caret"></span>
+</span>
+</div>
+<div class="tv-header__hamburger-menu js-device-menu-btn" data-device-menu-id="left">
+<svg height="12" viewbox="0 0 18 12" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M0 12h18v-2h-18v2zm0-5h18v-2h-18v2zm0-7v2h18v-2h-18z"></path></svg>
+</div>
+<div class="tv-header__right-elements">
+<span class="js-device-menu-btn js-device-menu-btn--notifications"></span>
+<div class="tv-header__profile-menu js-device-menu-btn" data-device-menu-id="right">
+<img class="tv-header__userpic js-userpic"/>
+<i class="tv-header__icon--counter-red tv-header__icon--counter-red-support-notifications js-support-notifications-indicator i-hidden"></i>
+</div>
+<span class="tv-header__device-signin">
+<span class="tv-header__device-signin-icon js-anonymous-mobile-menu-popup"><svg height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M17.5 9c0 1.14-.3 1.99-.79 2.54-.46.52-1.27.96-2.71.96s-2.25-.44-2.71-.96A3.74 3.74 0 0110.5 9c0-1.14.3-1.99.79-2.54.46-.52 1.27-.96 2.71-.96s2.25.44 2.71.96c.5.55.79 1.4.79 2.54zM19 9c0 2.76-1.45 5-5 5s-5-2.24-5-5 1.45-5 5-5 5 2.24 5 5zm-8 8.5h6c2.04 0 3.1.5 3.76 1.1.69.63 1.11 1.55 1.5 2.8.13.42.04.95-.29 1.4-.33.46-.8.7-1.22.7H7.25c-.43 0-.89-.24-1.22-.7a1.61 1.61 0 01-.3-1.4 6.08 6.08 0 011.51-2.8c.65-.6 1.72-1.1 3.76-1.1zm6-1.5h-6c-4.6 0-5.88 2.33-6.7 4.96-.58 1.89.97 4.04 2.95 4.04h13.5c1.98 0 3.53-2.15 2.95-4.04C22.88 18.33 21.6 16 17 16z" fill="currentColor" fill-rule="evenodd"></path></svg></span>
+</span>
+</div>
+</div>
+<div class="tv-header__area tv-header__area--middle"><form action="/ideas/search/" class="tv-header-search js-header-search" method="post">
+<span class="tv-header-search__select">
+<span class="tv-header-search__select-button tv-dropdown-behavior__button"><span data-type="symbols">Ticker</span> <span class="i-hidden" data-type="ideas">Trading Ideas</span> <span class="i-hidden" data-type="education">Educational Ideas</span> <span class="i-hidden" data-type="scripts">Scripts</span> <span class="i-hidden" data-type="people">People</span>
+<svg height="8" viewbox="0 0 16 8" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M0 1.475l7.396 6.04.596.485.593-.49L16 1.39 14.807 0 7.393 6.122 8.58 6.12 1.186.08z" fill="currentColor"></path></svg>
+</span>
+</span>
+<label class="tv-header-search__inputwrap">
+<tv-autocomplete><input autocomplete="off" class="tv-header-search__input js-header-search__input" name="query" placeholder="Search" spellcheck="false" type="search"/></tv-autocomplete>
+<span class="tv-header-search__icon"><svg height="16" viewbox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="currentColor"><circle cx="7.5" cy="7.5" r="6"></circle><path d="M11.5 11.5L15 15"></path></g></svg></span>
+</label>
+</form></div>
+<div class="tv-header__area tv-header__area--right tv-header__area--desktop">
+<span class="tv-dropdown-behavior tv-header__dropdown tv-header__dropdown--user js-user-dropdown" data-fit-screen="horz">
+<span class="tv-header__dropdown-wrap tv-dropdown-behavior__button">
+<span class="tv-header__dropdown-text tv-header__dropdown-text--userpic-wrap">
+<img class="tv-header__userpic js-userpic-mid"/>
+<i class="tv-header__icon--counter-red tv-header__icon--counter-red-support-notifications js-support-notifications-indicator i-hidden"></i>
+</span>
+<span class="tv-header__dropdown-text tv-header__dropdown-text--username js-username tv-header__dropdown-text--ellipsis apply-overflow-tooltip common-tooltip-fixed"></span>
+<span class="tv-header__badge js-user-badge-wrap">
+</span>
+</span>
+<span class="tv-dropdown-behavior__body i-hidden tv-header__dropdown-body tv-header__dropdown-body--fixwidth">
+<span class="tv-header__dropdown-dummy js-dropdown-toggle"></span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item"><a class="tv-header__dropdown-link js-profile-path" data-item-menu="profile">
+			Profile
+		</a></span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item"><a class="tv-header__dropdown-link js-profile-path" data-item-menu="profile settings" data-page="settings-profile">Profile Settings</a></span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item js-profile-hidden-for-broker">
+<a class="tv-header__dropdown-link js-profile-path" data-item-menu="account and billing" data-page="billing">
+				Account and Billing
+			</a>
+</span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item js-profile-hidden-for-broker">
+<a class="tv-header__dropdown-link js-user-referral--link" data-item-menu="referred friends" href="/share-your-love/?source=header_dropdown&amp;feature=referral">
+				Referred friends
+				<span class="tv-header__dropdown-counter tv-header__dropdown-counter--with-icon">
+<span class="js-user-counter--joined"></span>
+<span class="tv-header__dropdown-counter__coin-icon"> <svg fill="none" height="18" viewbox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="5.5" r="3" stroke="currentColor"></circle><path d="M3.51 16a5.47 5.47 0 0 1 5.47-5.47m0 0c.65 0 1.27.1 1.85.32m-1.85-.32a5.5 5.5 0 0 1 5.5 5.47" stroke="currentColor"></path></svg></span>
+</span>
+</a>
+</span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item js-profile-hidden-for-broker">
+<a class="tv-header__dropdown-link js-user-coins--link" data-item-menu="coins" href="/share-your-love/?source=header_dropdown&amp;feature=referral">
+				Coins
+				<span class="tv-header__dropdown-counter tv-header__dropdown-counter--with-icon">
+<span class="js-user-counter--coins"></span>
+<span class="tv-header__dropdown-counter__coin-icon"> <svg fill="none" height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="10.25" stroke="currentColor" stroke-width="1.5"></circle><path d="M7.97 14.97a.75.75 0 1 0 1.06 1.06l-1.06-1.06zM12 12l.53-.53a.75.75 0 0 0-1.06 0L12 12zm3.5 3.5l-.53.53c.3.3.77.3 1.06 0l-.53-.53zm4.03-2.97a.75.75 0 1 0-1.06-1.06l1.06 1.06zm-10.5 3.5l3.5-3.5-1.06-1.06-3.5 3.5 1.06 1.06zm2.44-3.5l3.5 3.5 1.06-1.06-3.5-3.5-1.06 1.06zm4.56 3.5l3.5-3.5-1.06-1.06-3.5 3.5 1.06 1.06z" fill="currentColor"></path><path d="M18.9 9a7 7 0 0 0-11.83 4M9 18.9A7 7 0 0 0 20.93 15" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></span>
+</span>
+</a>
+</span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item"><span class="tv-header__dropdown-separator"></span></span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item js-support-tickets-link i-hidden">
+<a class="tv-header__dropdown-link" href="#support">
+				My Support Tickets
+			</a>
+</span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item">
+<a class="tv-header__dropdown-link js-support-dialog" data-item-menu="help center" href="/support/">
+				Help Center
+				<span class="tv-header__dropdown-counter tv-header__dropdown-counter--agressive js-user-counter--support i-hidden"></span>
+</a>
+</span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item"><span class="tv-header__dropdown-separator"></span></span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item">
+<label class="tv-header__dropdown-link js-prevent-close" data-item-menu="dark color theme">
+					Dark color theme
+					<span class="tv-header__dropdown-counter js-dark-theme-switcher"></span>
+</label>
+</span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item"><span class="tv-header__dropdown-separator"></span></span>
+<span class="tv-header__dropdown-itmwrap tv-dropdown-behavior__item"><a class="tv-header__dropdown-link js-signout" data-item-menu="sign out" href="#signout">Sign Out</a></span>
+</span>
+</span>
+<span class="tv-header__dropdown-text">
+<a class="tv-header__link tv-header__link--signin js-header__signin" href="#signin">Sign in</a>
+</span>
+<span class="tv-header__gopro">
+<a class="tv-header__btn tv-header__btn--main" href="/gopro/?source=header_go_pro_button&amp;feature=Buy Pro">
+		Upgrade
+	</a>
+<a class="tv-header__btn tv-header__btn--trial" href="/gopro/?source=header_go_pro_button&amp;feature=Buy Trial">
+<span class="apply-overflow-tooltip">Upgrade now</span>
+<small class="apply-overflow-tooltip">30-day Free Trial</small>
+</a>
+<a class="tv-header__btn tv-header__btn--trial-join" href="/gopro/?source=header_go_pro_button&amp;feature=start_free_trial">
+			Start free trial
+		</a>
+<a class="tv-header__btn tv-header__btn--upgrade" href="/gopro/?source=header_go_pro_button&amp;feature=Upgrade Pro">
+<span class="apply-overflow-tooltip">Upgrade plan</span>
+<small class="apply-overflow-tooltip">Pay nothing extra</small>
+</a>
+<a class="tv-header__btn tv-header__btn--earlyaccess" href="/gopro/?source=header_go_pro_button&amp;feature=Buy EA">
+<span class="tv-header__earlyaccess-text apply-overflow-tooltip">Upgrade early</span>
+<small class="tv-header__earlyaccess-text js-trial-days-left apply-overflow-tooltip"></small>
+</a>
+</span>
+</div>
+</div>
+</div>
+<div class="tv-header tv-header__bottom">
+<div class="tv-mainmenu"><ul class="tv-mainmenu__list tv-layout-width"><li class="tv-mainmenu__item tv-mainmenu__item--chart"><a class="" data-type="chart" href="/chart/"><svg height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M9 6.5h10A2.5 2.5 0 0121.5 9v10a2.5 2.5 0 01-2.5 2.5H9A2.5 2.5 0 016.5 19V9A2.5 2.5 0 019 6.5zM5 9a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H9a4 4 0 01-4-4V9zm14.52 3.54a.75.75 0 10-1.04-1.08l-2.88 2.8-2.82-2.11a.75.75 0 00-.97.06l-3.33 3.25a.75.75 0 001.04 1.08l2.88-2.8 2.82 2.11c.3.22.7.2.97-.06l3.33-3.25z" fill="currentColor" fill-rule="evenodd"></path></svg>Chart</a></li><li class="tv-mainmenu__item"><a class="" data-type="brokers" href="/brokers/">Brokers</a><ul class="i-hidden"><li><a class="" href="/brokers/">Top Brokers</a></li><li><a class="" href="/broker-awards/">Broker Awards</a></li></ul></li><li class="tv-mainmenu__item tv-mainmenu__item--current"><a class="" data-type="markets" href="/markets/">Markets</a><ul class="i-hidden"><li><a class="" data-type="bitcoin" href="/markets/cryptocurrencies/prices-all/">Cryptocurrencies</a><ul><li><a class="" data-type="crypto-screener" href="/crypto-screener/">Crypto Screener</a></li><li><a class="" href="/markets/cryptocurrencies/prices-all/">Prices</a></li><li><a class="" href="/markets/cryptocurrencies/global-charts/">Market Cap charts</a></li><li><a class="" href="/markets/cryptocurrencies/prices-bitcoin/">Bitcoin</a></li><li><a class="" href="/markets/cryptocurrencies/prices-xrp/">XRP</a></li><li><a class="" href="/markets/cryptocurrencies/prices-ethereum/">Ethereum</a></li><li><a class="" href="/markets/cryptocurrencies/prices-bitcoin-cash/">Bitcoin Cash</a></li><li><a class="" href="/markets/cryptocurrencies/prices-eos/">EOS</a></li><li><a class="" href="/markets/cryptocurrencies/prices-stellar/">Stellar</a></li><li><a class="" href="/markets/cryptocurrencies/prices-litecoin/">Litecoin</a></li><li><a class="" href="/markets/cryptocurrencies/prices-bitcoin-sv/">Bitcoin SV</a></li><li><a class="" href="/markets/cryptocurrencies/prices-tether/">Tether</a></li></ul><p data-watchlist=""><a data-symbol="CRYPTOCAP:TOTAL" href="/symbols/CRYPTOCAP-TOTAL/">Crypto Market Cap</a>, <a data-symbol="BITSTAMP:BTCUSD" href="/symbols/BTCUSD/">BTC/USD</a>, <a data-symbol="BITSTAMP:ETHUSD" href="/symbols/ETHUSD/">ETH/USD</a>, <a data-symbol="KRAKEN:USDTUSD" href="/symbols/USDTUSD/">USDT/USD</a>, <a data-symbol="BITSTAMP:XRPUSD" href="/symbols/XRPUSD/">XRP/USD</a>, <a data-symbol="CME:BTC1!" href="/symbols/CME-BTC1!/">Bitcoin</a></p></li><li><a class="" data-type="forex" href="/markets/currencies/rates-major/">Currencies</a><ul><li><a class="" data-type="calendar" href="/markets/currencies/economic-calendar/">Economic Calendar</a></li><li><a class="" data-type="forex-screener" href="/forex-screener/">Forex Screener</a></li><li><a class="" href="/markets/currencies/rates-major/">Major</a></li><li><a class="" href="/markets/currencies/rates-minor/">Minor</a></li><li><a class="" href="/markets/currencies/rates-exotic/">Exotic</a></li><li><a class="" href="/markets/currencies/rates-americas/">Americas</a></li><li><a class="" href="/markets/currencies/rates-europe/">Europe</a></li><li><a class="" href="/markets/currencies/rates-asia/">Asia</a></li><li><a class="" href="/markets/currencies/rates-pacific/">Pacific</a></li><li><a class="" href="/markets/currencies/rates-middle-east/">Middle East</a></li><li><a class="" href="/markets/currencies/rates-africa/">Africa</a></li><li><a class="" href="/markets/currencies/cross-rates-overview-prices/">Cross rates</a></li><li><a class="" href="/markets/currencies/cross-rates-overview-heat-map/">Heat map</a></li><li><a class="" href="/markets/currencies/indices-all/">Currency indices</a></li></ul><p data-watchlist=""><a data-symbol="FX_IDC:EURUSD" href="/symbols/EURUSD/">EUR/USD</a>, <a data-symbol="FX_IDC:GBPUSD" href="/symbols/GBPUSD/">GBP/USD</a>, <a data-symbol="FX_IDC:USDJPY" href="/symbols/USDJPY/">USD/JPY</a>, <a data-symbol="FX_IDC:AUDUSD" href="/symbols/AUDUSD/">AUD/USD</a>, <a data-symbol="FX_IDC:USDCAD" href="/symbols/USDCAD/">USD/CAD</a>, <a data-symbol="FX_IDC:USDCHF" href="/symbols/USDCHF/">USD/CHF</a></p></li><li><a class="" data-type="stocks" href="/markets/stocks-usa/market-movers-large-cap/">Stocks</a><ul><li><a class="" data-type="earnings" href="/markets/stocks-usa/earnings/">Earnings Calendar</a></li><li><a class="" data-type="screener" href="/screener/">Stock Screener</a></li><li><a class="" href="/markets/stocks-usa/market-movers-large-cap/">Large-cap</a></li><li><a class="" href="/markets/stocks-usa/market-movers-gainers/">Top gainers</a></li><li><a class="" href="/markets/stocks-usa/market-movers-losers/">Top losers</a></li><li><a class="" href="/markets/stocks-usa/market-movers-active/">Most active</a></li><li><a class="" href="/markets/stocks-usa/market-movers-most-volatile/">Most volatile</a></li><li><a class="" href="/markets/stocks-usa/market-movers-overbought/">Overbought</a></li><li><a class="" href="/markets/stocks-usa/market-movers-oversold/">Oversold</a></li><li><a class="" href="/markets/stocks-usa/highs-and-lows-ath/">All-time high</a></li><li><a class="" href="/markets/stocks-usa/highs-and-lows-atl/">All-time low</a></li><li><a class="" href="/markets/stocks-usa/highs-and-lows-high-dividend/">High-dividend</a></li><li><a class="" href="/markets/stocks-usa/sectorandindustry-sector/">Sector &amp; Industry</a></li></ul><p data-watchlist=""><a data-symbol="NASDAQ:AAPL" href="/symbols/NASDAQ-AAPL/">Apple</a>, <a data-symbol="NASDAQ:AMD" href="/symbols/NASDAQ-AMD/">Advanced Micro Devices Inc</a>, <a data-symbol="NASDAQ:AMZN" href="/symbols/NASDAQ-AMZN/">Amazon Com Inc</a>, <a data-symbol="NASDAQ:TSLA" href="/symbols/NASDAQ-TSLA/">TESLA INC</a>, <a data-symbol="NASDAQ:NFLX" href="/symbols/NASDAQ-NFLX/">NETFLIX INC</a>, <a data-symbol="NASDAQ:FB" href="/symbols/NASDAQ-FB/">Facebook Inc</a></p></li><li><a class="" data-type="indices" href="/markets/indices/quotes-major/">Indices</a><ul><li><a class="" href="/markets/indices/quotes-major/">Major world indices</a></li><li><a class="" href="/markets/indices/quotes-us/">US indices</a></li><li><a class="" href="/markets/indices/quotes-snp/">S&amp;P sectors</a></li><li><a class="" href="/markets/indices/quotes-currency/">Currency indices</a></li></ul><p data-watchlist=""><a data-symbol="CME_MINI:ES1!" href="/symbols/CME_MINI-ES1!/">S&amp;P 500</a>, <a data-symbol="CME_MINI:NQ1!" href="/symbols/CME_MINI-NQ1!/">Nasdaq 100</a>, <a data-symbol="CBOT_MINI:YM1!" href="/symbols/CBOT_MINI-YM1!/">Dow 30</a>, <a data-symbol="CME_MINI:RTY1!" href="/symbols/CME_MINI-RTY1!/">Russell 2000</a>, <a data-symbol="ICEUS:DX1!" href="/symbols/ICEUS-DX1!/">U.S. Dollar Index</a>, <a data-symbol="BITMEX:XBT" href="/symbols/XBT/">Bitcoin Index</a></p></li><li><a class="" data-type="commodities" href="/markets/futures/quotes-all/">Futures</a><ul><li><a class="" href="/markets/futures/quotes-agricultural/">Agricultural</a></li><li><a class="" href="/markets/futures/quotes-energy/">Energy</a></li><li><a class="" href="/markets/futures/quotes-currencies/">Currencies</a></li><li><a class="" href="/markets/futures/quotes-metals/">Metals</a></li><li><a class="" href="/markets/futures/quotes-world-indices/">World indices</a></li><li><a class="" href="/markets/futures/quotes-interest-rates/">Interest rates</a></li></ul><p data-watchlist=""><a data-symbol="COMEX:GC1!" href="/symbols/COMEX-GC1!/">Gold</a>, <a data-symbol="COMEX:SI1!" href="/symbols/COMEX-SI1!/">Silver</a>, <a data-symbol="NYMEX:CL1!" href="/symbols/NYMEX-CL1!/">Crude Oil</a>, <a data-symbol="NYMEX:NG1!" href="/symbols/NYMEX-NG1!/">Natural Gas</a>, <a data-symbol="CBOT:ZC1!" href="/symbols/CBOT-ZC1!/">Corn</a>, <a data-symbol="CME:BTC1!" href="/symbols/CME-BTC1!/">Bitcoin</a></p></li><li><a class="" data-type="bonds" href="/markets/bonds/prices-all/">Bonds</a><ul><li><a class="" href="/markets/bonds/prices-major/">Major 10Y</a></li><li><a class="" href="/markets/bonds/prices-americas/">Americas</a></li><li><a class="" href="/markets/bonds/prices-europe/">Europe</a></li><li><a class="" href="/markets/bonds/prices-asia/">Asia</a></li><li><a class="" href="/markets/bonds/prices-pacific/">Pacific</a></li><li><a class="" href="/markets/bonds/prices-middle-east/">Middle East</a></li><li><a class="" href="/markets/bonds/prices-africa/">Africa</a></li></ul><p data-watchlist=""><a data-symbol="TVC:US10Y" href="/symbols/TVC-US10Y/">US 10Y</a>, <a data-symbol="TVC:EUBUND" href="/symbols/TVC-EUBUND/">Euro Bund</a>, <a data-symbol="TVC:DE10Y" href="/symbols/TVC-DE10Y/">Germany 10Y</a>, <a data-symbol="TVC:JP10Y" href="/symbols/TVC-JP10Y/">Japan 10Y Yield</a>, <a data-symbol="TVC:GB10Y" href="/symbols/TVC-GB10Y/">UK 10Y</a>, <a data-symbol="TVC:IN10Y" href="/symbols/TVC-IN10Y/">India 10Y</a></p></li></ul></li><li class="tv-mainmenu__item"><a class="" data-type="screener" href="/screener/">Screeners</a><ul class="i-hidden"><li><a class="" data-hide-on-mobile="true" href="/screener/">Stock Screener</a></li><li><a class="" href="/forex-screener/">Forex Screener</a></li><li><a class="" href="/crypto-screener/">Crypto Screener</a></li></ul></li><li class="tv-mainmenu__item"><a class="" data-type="ideas" href="/ideas/">Ideas</a><ul class="i-hidden"><li><a class="" href="/ideas/editors-picks/">Editors' picks</a></li><li><a class="" data-visible-for="authenticated" href="/ideas/followed-authors/">Followed authors</a></li><li><a class="" href="/ideas/">Asset class</a><ul><li><a class="" href="/markets/cryptocurrencies/ideas/">Cryptocurrencies</a></li><li><a class="" href="/markets/currencies/ideas/">Currencies</a></li><li><a class="" href="/markets/stocks-usa/ideas/">Stocks</a></li><li><a class="" href="/markets/indices/ideas/">Indices</a></li><li><a class="" href="/markets/futures/ideas/">Futures</a></li><li><a class="" href="/markets/bonds/ideas/">Bonds</a></li></ul></li><li><a class="" href="/ideas/trendanalysis/">Trend analysis</a><ul><li><a class="" href="/ideas/supportandresistance/">Support and resistance</a></li><li><a class="" href="/ideas/supplyanddemand/">Supply and demand</a></li><li><a class="" href="/ideas/pivotpoints/">Pivot Points</a></li><li><a class="" href="/ideas/fibonacci/">Fibonacci</a></li><li><a class="" href="/ideas/trendline/">Trend lines</a></li><li><a class="" href="/ideas/candlestick/">Candlestick analysis</a></li><li><a class="" href="/ideas/mtfa/">Multiple time frame analysis</a></li><li><a class="" href="/ideas/seasonality/">Seasonality</a></li><li><a class="" href="/ideas/fractal/">Fractals</a></li><li><a class="" href="/ideas/economiccycle/">Cycles</a></li></ul></li><li><a class="" href="/ideas/harmonicpatterns/">Harmonic patterns</a><ul><li><a class="" href="/ideas/abcdpattern/">AB=CD</a></li><li><a class="" href="/ideas/threedrivespattern/">Three Drives</a></li><li><a class="" href="/ideas/gartleypattern/">Gartley</a></li><li><a class="" href="/ideas/batpattern/">Bat</a></li><li><a class="" href="/ideas/butterflypattern/">Butterfly</a></li><li><a class="" href="/ideas/crabpattern/">Crab</a></li><li><a class="" href="/ideas/cypherpattern/">Cypher</a></li><li><a class="" href="/ideas/5-0pattern/">5-0</a></li><li><a class="" href="/ideas/sharkpattern/">Shark</a></li></ul></li><li><a class="" href="/ideas/chartpattern/">Chart patterns</a><ul><li><a class="" href="/ideas/doubletoporbottom/">Double Top or Bottom</a></li><li><a class="" href="/ideas/headandshoulders/">Head and Shoulders</a></li><li><a class="" href="/ideas/wedgepattern/">Wedge</a></li><li><a class="" href="/ideas/cupandhandle/">Cup and Handle</a></li><li><a class="" href="/ideas/flagpattern/">Flag</a></li><li><a class="" href="/ideas/pennant/">Pennant</a></li><li><a class="" href="/ideas/rectangle/">Rectangle</a></li><li><a class="" href="/ideas/parallelchannel/">Parallel channel</a></li><li><a class="" href="/ideas/pitchfork/">Pitchforks</a></li><li><a class="" href="/ideas/triangle/">Triangle</a></li></ul></li><li><a class="" href="/ideas/indicator/">Technical indicators</a><ul><li><a class="" href="/ideas/oscillator/">Oscillators</a></li><li><a class="" href="/ideas/centeredoscillator/">Centered oscillators</a></li><li><a class="" href="/ideas/volatility/">Volatility</a></li><li><a class="" href="/ideas/volumestudies/">Volume</a></li><li><a class="" href="/ideas/movingaverage/">Moving Average</a></li><li><a class="" href="/ideas/breadthstudies/">Breadth indicators</a></li><li><a class="" href="/ideas/billwilliams/">Bill Williams indicators</a></li></ul></li><li><a class="" href="/ideas/waveanalysis/">Wave analysis</a><ul><li><a class="" href="/ideas/elliottwaves/">Elliott Wave</a></li><li><a class="" href="/ideas/neowave/">Neo Wave</a></li><li><a class="" href="/ideas/sinewave/">Sine Wave</a></li><li><a class="" href="/ideas/wolfewaves/">Wolfe Wave</a></li><li><a class="" href="/ideas/kondratieff/">Kondratieff Wave</a></li></ul></li><li><a class="" href="/ideas/gann/">Gann</a><ul><li><a class="" href="/ideas/gannbox/">Gann Box</a></li><li><a class="" href="/ideas/gannfan/">Gann Fan</a></li><li><a class="" href="/ideas/gannsquare/">Gann Square</a></li></ul></li><li><a class="" href="/ideas/fundamental/">Fundamental analysis</a><ul><li><a class="" href="/ideas/earnings/">Earnings</a></li><li><a class="" href="/ideas/growth/">Growth</a></li><li><a class="" href="/ideas/value/">Value</a></li><li><a class="" href="/ideas/dividends/">Dividends</a></li></ul></li><li><a class="" href="/ideas/beyondta/">Beyond technical analysis</a><ul><li><a class="" href="/education/riskmanagement/">Risk management</a></li><li><a class="" href="/education/tradingpsychology/">Trading psychology</a></li><li><a class="" href="/education/tradingplan/">Trading plan</a></li><li><a class="" href="/education/tradingtool/">Trading tools</a></li><li><a class="" href="/markets/macroeconomics/">Macroeconomics</a></li><li><a class="" href="/ideas/chartart/">Chart art</a></li></ul></li></ul></li><li class="tv-mainmenu__item"><a class="" data-type="streams" href="/streams/">Streams</a></li><li class="tv-mainmenu__item"><a class="" data-type="scripts" href="/scripts/">Scripts</a><ul class="i-hidden"><li><a class="" href="/scripts/editors-picks/">Editors' picks</a></li><li><a class="" href="/scripts/oscillator/">Oscillators</a><ul><li><a class="" href="/scripts/relativestrengthindex/">Relative Strength Index (RSI)</a></li><li><a class="" href="/scripts/averagedirectionalindex/">Average Directional Index (ADX)</a></li><li><a class="" href="/scripts/stochastic/">Stochastic Oscillator</a></li><li><a class="" href="/scripts/chandemo/">Chande Momentum Oscillator (CMO)</a></li><li><a class="" href="/scripts/truestrengthindicator/">True Strength Index (TSI)</a></li><li><a class="" href="/scripts/ultimateoscillator/">Ultimate Oscillator (UO)</a></li><li><a class="" href="/scripts/stochasticrsi/">Stochastic RSI</a></li><li><a class="" href="/scripts/vortex/">Vortex Indicator (VI)</a></li><li><a class="" href="/scripts/directionalmovement/">Directional Movement Index (DMI)</a></li><li><a class="" href="/scripts/demarker/">DM Indicator</a></li></ul></li><li><a class="" href="/scripts/centeredoscillator/">Centered oscillators</a><ul><li><a class="" href="/scripts/macd/">Moving Average Convergence Divergence (MACD)</a></li><li><a class="" href="/scripts/commoditychannelindex/">Commodity Channel Index (CCI)</a></li><li><a class="" href="/scripts/fishertransform/">Fisher Transform</a></li><li><a class="" href="/scripts/momentum/">Momentum Indicator (MOM)</a></li><li><a class="" href="/scripts/woodies/">Woodies CCI</a></li><li><a class="" href="/scripts/trix/">TRIX</a></li><li><a class="" href="/scripts/detrendedpriceoscillator/">Detrended Price Oscillator (DPO)</a></li><li><a class="" href="/scripts/priceoscillator/">Percent Price Oscillator (PPO)</a></li><li><a class="" href="/scripts/bearpower/">Bears Power</a></li><li><a class="" href="/scripts/knowsurething/">Know Sure Thing (KST)</a></li></ul></li><li><a class="" href="/scripts/volatility/">Volatility</a><ul><li><a class="" href="/scripts/averagetruerange/">Average True Range (ATR)</a></li><li><a class="" href="/scripts/bollingerbands/">Bollinger Bands (BB)</a></li><li><a class="" href="/scripts/rateofchange/">Rate of Change (ROC)</a></li><li><a class="" href="/scripts/donchianchannels/">Donchian Channels</a></li><li><a class="" href="/scripts/keltnerchannels/">Keltner Channels (KC)</a></li><li><a class="" href="/scripts/parabolicsar/">Parabolic Stop and Reverse (PSAR)</a></li><li><a class="" href="/scripts/historicalvolatility/">Historical Volatility</a></li><li><a class="" href="/scripts/standarddeviation/">Standard Deviation</a></li><li><a class="" href="/scripts/volatilitystop/">Volatility Stop</a></li><li><a class="" href="/scripts/chaikinvolatility/">Chaikin Volatility (CHV)</a></li></ul></li><li><a class="" href="/scripts/trendanalysis/">Trend analysis</a><ul><li><a class="" href="/scripts/ichimokuclouds/">Ichimoku Cloud</a></li><li><a class="" href="/scripts/pivotpoints/">Pivot Points</a></li><li><a class="" href="/scripts/price-earnings-ratio/">Price/Earnings Ratio (P/E Ratio)</a></li><li><a class="" href="/scripts/supportandresistance/">Support and Resistance</a></li><li><a class="" href="/scripts/commitmentoftraders/">Commitment of Traders (COT)</a></li><li><a class="" href="/scripts/linearregression/">Linear Regression</a></li><li><a class="" href="/scripts/specialk/">Pring Special K</a></li><li><a class="" href="/scripts/zigzagindicator/">Zig Zag Indicator</a></li><li><a class="" href="/scripts/candlestick/">Candlestick Analysis</a></li><li><a class="" href="/scripts/relativestrengthcomparison/">Relative Strength Comparison (RSC)</a></li></ul></li><li><a class="" href="/scripts/volumestudies/">Volume</a><ul><li><a class="" href="/scripts/putcallratio/">Put/Call Ratio (PCR)</a></li><li><a class="" href="/scripts/volume/">Volume Indicator</a></li><li><a class="" href="/scripts/moneyflow/">Money Flow Index (MFI)</a></li><li><a class="" href="/scripts/chaikinmoneyflow/">Chaikin Money Flow (CMF)</a></li><li><a class="" href="/scripts/volumeprofile/">Volume Profile</a></li><li><a class="" href="/scripts/vwap/">Volume-weighted Average Price (VWAP)</a></li><li><a class="" href="/scripts/accumulationdistribution/">Accumulation / Distribution Line (ADL)</a></li><li><a class="" href="/scripts/pricevolumetrend/">Price Volume Trend (PVT)</a></li><li><a class="" href="/scripts/easeofmovement/">Ease of Movement (EOM)</a></li><li><a class="" href="/scripts/negativevolumeindex/">Negative Volume Index (NVI)</a></li></ul></li><li><a class="" href="/scripts/movingaverage/">Moving average</a><ul><li><a class="" href="/scripts/ema/">Exponential Moving Average (EMA)</a></li><li><a class="" href="/scripts/wma/">Weighted Moving Average (WMA)</a></li><li><a class="" href="/scripts/simplemovingaverage/">Simple Moving Average (SMA)</a></li><li><a class="" href="/scripts/hullma/">Hull Moving Average (HMA)</a></li><li><a class="" href="/scripts/kama/">Kaufman's Adaptive Moving Average (KAMA)</a></li><li><a class="" href="/scripts/smma/">Smoothed Moving Average (SMMA)</a></li><li><a class="" href="/scripts/vidya/">Variable Index Dynamic Average (VIDYA)</a></li><li><a class="" href="/scripts/vwma/">Volume-weighted Moving Average (VWMA)</a></li><li><a class="" href="/scripts/frama/">Fractal Adaptive Moving Average (FRAMA)</a></li><li><a class="" href="/scripts/dema/">Double Exponential Moving Average (DEMA)</a></li></ul></li><li><a class="" href="/scripts/breadthstudies/">Breadth indicators</a><ul><li><a class="" href="/scripts/onbalancevolume/">On Balance Volume (OBV)</a></li><li><a class="" href="/scripts/mcclellan/">McClellan Oscillator</a></li><li><a class="" href="/scripts/mcclellansummation/">McClellan Summation Index</a></li><li><a class="" href="/scripts/advancedeclineratio/">Advance/Decline Ratio</a></li><li><a class="" href="/scripts/cumulativevolumeindex/">Cumulative Volume Index (CVI)</a></li><li><a class="" href="/scripts/armsindex/">Arms Index (TRIN)</a></li><li><a class="" href="/scripts/advancedecline/">Advance/Decline Line</a></li><li><a class="" href="/scripts/highlowindex/">High-Low Index</a></li><li><a class="" href="/scripts/advolumeline/">Advance/Decline Volume Line</a></li></ul></li><li><a class="" href="/scripts/billwilliams/">Bill Williams indicators</a><ul><li><a class="" href="/scripts/awesomeoscillator/">Awesome Oscillator (AO)</a></li><li><a class="" href="/scripts/williamsfractal/">Williams Fractal</a></li><li><a class="" href="/scripts/marketfacilitationindex/">Market Facilitation Index</a></li><li><a class="" href="/scripts/alligator/">Williams Alligator</a></li><li><a class="" href="/scripts/gator/">Gator Oscillator</a></li><li><a class="" href="/scripts/acceleratoroscillator/">Accelerator Oscillator (AC)</a></li></ul></li></ul></li><li class="tv-mainmenu__item"><a class="" data-hide-on-mobile="true" data-type="more">More</a><ul class="i-hidden"><li><a class="" href="/support/">Help Center</a></li><li><a class="" href="/gopro/?source=header_main_menu&amp;feature=pricing">Pricing</a></li><li><a class="" data-type="about" href="/how-it-works/">About</a><ul><li><a class="" href="/how-it-works/">How it works</a></li><li><a class="" href="/features/">Features</a></li><li><a class="" href="https://www.tradingview.com/blog/en/" rel="noopener" target="_blank">Blog &amp; news</a></li><li><a class="" href="https://status.tradingview.com/">Status page</a></li><li><a class="" href="/wall-of-love/">Wall of Love</a></li></ul></li><li><a class="" data-type="community" href="/share-your-love/?source=header_main_menu&amp;feature=refer_friend">Community</a><ul><li><a class="" href="/share-your-love/?source=header_main_menu&amp;feature=refer_friend">Refer a friend</a></li><li><a class="" href="/house-rules/">House rules</a></li><li><a class="" href="/moderators/">Moderators</a></li><li><a class="" href="/people/">People</a></li><li><a class="" href="/pine-wizards/">Pine Wizards</a></li></ul></li><li><a class="" data-type="for-business" href="/tradingview-for-the-web/">For business</a><ul><li><a class="" href="/tradingview-for-the-web/">Website &amp; broker solutions</a></li><li><a class="" href="/widget/">Widgets</a></li><li><a class="" href="/HTML5-stock-forex-bitcoin-charting-library/">Charting solutions</a></li><li><a class="" href="/lightweight-charts/">Lightweight Library</a></li><li><a class="" href="/brokerage-integration/">Brokerage integration</a></li><li><a class="" href="/referral-program/">Partner program</a></li><li><a class="" href="/advertising-info/">Advertising</a></li></ul></li></ul></li></ul></div></div><div class="tv-header-separator tv-header-separator--sticky"></div>
+<div class="tv-content">
+<div class="" id="js-category-content">
+<header class="tv-category-header">
+<div class="tv-category-header__content tv-layout-width tv-layout-width--simple">
+<div class="tv-breadcrumbs tv-breadcrumbs--nowrap tv-category-header__breadcrumbs">
+<div class="tv-scroll-wrap tv-scroll-wrap--horizontal tv-category-header__breadcrumbs-content">
+<a class="tv-breadcrumbs__item" href="/markets/">Markets</a>
+<a class="tv-breadcrumbs__item" href="/markets/stocks-usa/market-movers-large-cap/">US Stocks</a>
+<a class="tv-breadcrumbs__item" href="/markets/stocks-usa/sectorandindustry-sector/finance/">Finance</a>
+<a class="tv-breadcrumbs__item" href="/markets/stocks-usa/sectorandindustry-industry/financial-conglomerates/">Financial Conglomerates</a>
+<a class="tv-breadcrumbs__item" href="/symbols/NYSE-CCIV/">CCIV</a>
+</div>
+</div>
+<div class="tv-category-header__title-line">
+<div class="tv-category-header__title">
+<h1>
+<div class="tv-symbol-header">
+<div class="tv-symbol-header__first-line">CHURCHILL CAPITAL CORP IV</div>
+<span class="tv-symbol-header__second-line" data-exchanges="[]" data-selected-provider-id="ice" data-short-name="CCIV">
+<span class="tv-symbol-header__second-line--text">CCIV</span><span class="tv-symbol-header__exchange-container"><img alt="" class="tv-circle-logo tv-circle-logo--small tv-symbol-header__exchange-logo" src="https://s3-symbol-logo.tradingview.com/country/US.svg"/><span class="tv-symbol-header__exchange"> NYSE</span> </span>
+</span>
+</div></h1>
+<div class="tv-symbol-header tv-symbol-header--mobile">
+<div class="tv-symbol-header__first-line">CCIV</div>
+<span class="tv-symbol-header__second-line" data-exchanges="[]" data-selected-provider-id="ice" data-short-name="CCIV">
+<span class="tv-symbol-header__second-line--text">CHURCHILL CAPITAL CORP IV</span><span class="tv-symbol-header__exchange-container"><img alt="" class="tv-circle-logo tv-circle-logo--small tv-symbol-header__exchange-logo" src="https://s3-symbol-logo.tradingview.com/country/US.svg"/><span class="tv-symbol-header__exchange"> NYSE</span> </span>
+</span>
+</div> </div>
+<div class="tv-category-header__buttons tv-symbol-header-buttons tv-category-header__buttons--hide-if_less-than_tablet">
+<button class="tv-button tv-button--primary tv-button--size_large tv-button--thin-border tv-button--state tv-button--primary_ghost-hover tv-button--icon-with-text tv-category-header__button--grow-if_less-than_phone js-follow-symbol" data-symbol="NYSE:CCIV" data-type="stock">
+<span class="tv-button--state__unchecked">Follow</span>
+<span class="tv-button--state__checked">
+<svg fill="none" height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M7 15l5 5L23 9" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>Following</span>
+<span class="tv-button--state__uncheck-hint">Unfollow</span>
+</button>
+<a class="tv-button tv-button--primary tv-button--size_large tv-symbol-header-buttons--trade-now js-trade-now-symbol" href="/chart?symbol=NYSE%3ACCIV&amp;trade-now=symbol-page" target="_blank">Trade now</a>
+</div> </div>
+<div class="tv-category-header__price-line tv-category-header__price-line--allow-wrap-on-tablet js-header-symbol-quotes" data-symbol="NYSE:CCIV" data-type="stock">
+<div class="tv-category-header__main-price js-scroll-container">
+<div class="tv-scroll-wrap tv-scroll-wrap--horizontal js-scroll-scrollable-element">
+<div class="tv-category-header__main-price-content">
+<div class="tv-symbol-price-quote js-last-price-block i-invisible">
+<div class="tv-symbol-price-quote__row js-last-price-block-value-row">
+<div class="tv-symbol-price-quote__value js-symbol-last"></div>
+<div class="tv-symbol-price-quote__supply">
+<div class="tv-symbol-price-quote__data-mode tv-data-mode tv-data-mode--size_large js-data-mode"></div>
+<div class="tv-symbol-price-quote__currency js-symbol-currency"> </div>
+</div>
+<div class="js-symbol-change-direction tv-symbol-price-quote__change">
+<span class="js-symbol-change tv-symbol-price-quote__change-value"></span>
+<span class="js-symbol-change-pt tv-symbol-price-quote__change-value"></span>
+</div>
+</div>
+<div class="tv-symbol-price-quote__sub-line">
+<span class="js-last-price-block-title"></span>
+<span class="js-symbol-lp-time"></span>
+</div>
+</div></div>
+</div>
+</div>
+<div class="tv-category-header__rtc-price-group-fundamentals js-rtc-price-group js-scroll-container">
+<div class="tv-scroll-wrap tv-scroll-wrap--horizontal js-scroll-scrollable-element">
+<div class="tv-category-header__rtc-price-group-fundamentals-content">
+<div class="tv-symbol-price-quote tv-category-header__rtc-price i-hidden js-rtc-price-block">
+<div class="tv-symbol-price-quote__row tv-symbol-price-quote__row--small">
+<div class="tv-symbol-price-quote__value tv-symbol-price-quote__value--small js-symbol-ext-hrs-close"></div>
+<div class="js-symbol-ext-hrs-change-direction tv-symbol-price-quote__change">
+<span class="js-symbol-ext-hrs-change tv-symbol-price-quote__change-value"></span>
+<span class="js-symbol-ext-hrs-change-pt tv-symbol-price-quote__change-value"></span>
+</div>
+</div>
+<div class="tv-symbol-price-quote__sub-line">
+<span class="js-rtc-price-block-title tv-symbol-price-quote__market-stat"></span>
+<span class="js-symbol-rtc-time"></span>
+</div>
+</div> <div class="tv-category-header__fundamentals tv-category-header__fundamentals--price-group js-header-fundamentals-phone">
+<div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip common-tooltip-html js-fund-container">
+<div class="tv-fundamental-block__value tv-fundamental-block__value--sentence-cased js-symbol-next-earning"></div>
+<div class="tv-fundamental-block__title">Upcoming Earnings</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Earnings per Share, Basic, TTM">
+<div class="tv-fundamental-block__value js-symbol-eps"></div>
+<div class="tv-fundamental-block__title">EPS</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Market Cap — Basic">
+<div class="tv-fundamental-block__value js-symbol-market-cap"></div>
+<div class="tv-fundamental-block__title">Market Cap</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Dividends Yield (FY)">
+<div class="tv-fundamental-block__value js-symbol-dividends"></div>
+<div class="tv-fundamental-block__title">Div Yield</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Price/Earnings, TTM">
+<div class="tv-fundamental-block__value js-symbol-pe"></div>
+<div class="tv-fundamental-block__title">P/E</div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="tv-category-header__fundamentals js-header-fundamentals">
+<div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip common-tooltip-html js-fund-container">
+<div class="tv-fundamental-block__value tv-fundamental-block__value--sentence-cased js-symbol-next-earning"></div>
+<div class="tv-fundamental-block__title">Upcoming Earnings</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Earnings per Share, Basic, TTM">
+<div class="tv-fundamental-block__value js-symbol-eps"></div>
+<div class="tv-fundamental-block__title">EPS</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Market Cap — Basic">
+<div class="tv-fundamental-block__value js-symbol-market-cap"></div>
+<div class="tv-fundamental-block__title">Market Cap</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Dividends Yield (FY)">
+<div class="tv-fundamental-block__value js-symbol-dividends"></div>
+<div class="tv-fundamental-block__title">Div Yield</div>
+</div><div class="tv-fundamental-block tv-category-header__fundamentals-block i-hidden apply-common-tooltip js-fund-container" title="Price/Earnings, TTM">
+<div class="tv-fundamental-block__value js-symbol-pe"></div>
+<div class="tv-fundamental-block__title">P/E</div>
+</div></div>
+</div>
+<div class="tv-category-header__buttons tv-category-header__buttons--adaptive tv-symbol-header-buttons tv-symbol-header-buttons--mobile tv-category-header__buttons--hide-if_bigger-than_phone">
+<a class="tv-button tv-button--primary tv-button--size_large tv-symbol-header-buttons--trade-now js-trade-now-symbol" href="/chart?symbol=NYSE%3ACCIV&amp;trade-now=symbol-page" target="_blank">Trade now</a>
+<span class="tv-symbol-header-buttons__row">
+<button class="tv-button tv-button--primary tv-button--size_large tv-button--thin-border tv-button--state tv-button--primary_ghost-hover tv-button--icon-with-text tv-category-header__button--grow-if_less-than_phone js-follow-symbol" data-symbol="NYSE:CCIV" data-type="stock">
+<span class="tv-button--state__unchecked">Follow</span>
+<span class="tv-button--state__checked">
+<svg fill="none" height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M7 15l5 5L23 9" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>Following</span>
+<span class="tv-button--state__uncheck-hint">Unfollow</span>
+</button>
+</span>
+</div>
+<div class="tv-category-header__tabs">
+<div class="tv-tabs tv-tabs--category-header tv-tabs--no-border js-category-tabs">
+<a class="tv-tabs__tab" href="/symbols/NYSE-CCIV/">
+Overview </a> <a class="tv-tabs__tab" href="/symbols/NYSE-CCIV/ideas/">
+Ideas </a> <div class="tv-tabs__tab i-active">
+Technicals </div> </div> </div></div>
+</header>
+<div class="tv-layout-width">
+<div class="js-feed-wrap">
+<div class="tv-feed tv-feed-layout">
+<div class="tv-card-container">
+<div class="tv-card-container__columns tv-sticky-columns">
+<div class="tv-card-container__main tv-feed-layout__ideas-column tv-sticky-columns__column" data-ajax-path="/symbols/NYSE-CCIV/technicals/main/">
+<div class="tv-card-container__column-row">
+<h2 class="tv-content-header">
+			Technical analysis
+	</h2>
+</div>
+<div class="tv-card-container__ideas tv-card-container__ideas--with-padding">
+<div class="tv-card-container__ideas tv-card-exterior">
+<div class="tv-category__tab-description">
+<div class="tv-category__tab-description-content">
+<div class="tv-category-description">
+<h2 class="tv-category-description__title">
+						A fast and easy way to analyze US Stocks
+					</h2>
+<p class="tv-category-description__text">
+						Technical analysis gauges display real-time ratings for the selected timeframes. The summary for CHURCHILL CAPITAL CORP IV is based on the most popular technical indicators — Moving Averages, Oscillators and Pivots. Results are available at a quick glance.
+					</p>
+</div>
+</div>
+</div>
+<div class="technicals-container tv-category__content" id="technicals-root"></div>
+</div> </div>
+</div>
+</div>
+</div>
+</div>
+</div> </div>
+</div>
+</div>
+<footer class="tv-footer js-footer">
+<div class="tv-layout-width tv-footer__inner">
+<div class="tv-footer__wrap">
+<div class="tv-footer__column tv-footer__links-group js-expand">
+<div class="tv-footer__links-group-title js-expand__title">
+<span class="tv-footer__title">Products</span>
+<svg viewbox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="m1 6 5-4 5 4" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-width="2"></path></svg>
+</div>
+<div class="tv-footer__links-group-body js-expand__body">
+<a class="tv-footer__link" href="/chart/">Chart</a>
+<a class="tv-footer__link" href="https://www.tradingview.com/pine-script-docs/en/v4/Introduction.html" target="_blank">Pine Script</a>
+<a class="tv-footer__link" href="/screener/">Stock Screener</a>
+<a class="tv-footer__link" href="/forex-screener/">Forex Screener</a>
+<a class="tv-footer__link" href="/crypto-screener/">Crypto Screener</a>
+<a class="tv-footer__link" href="/markets/currencies/economic-calendar/">Economic Calendar</a>
+<a class="tv-footer__link" href="/markets/stocks-usa/earnings/">Earnings Calendar</a>
+</div>
+</div>
+<div class="tv-footer__column tv-footer__links-group js-expand">
+<div class="tv-footer__links-group-title js-expand__title">
+<span class="tv-footer__title">Company</span>
+<svg viewbox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="m1 6 5-4 5 4" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-width="2"></path></svg>
+</div>
+<div class="tv-footer__links-group-body js-expand__body">
+<a class="tv-footer__link" href="/contacts/">About</a>
+<a class="tv-footer__link" href="/how-it-works/">How it works</a>
+<a class="tv-footer__link" href="/features/">Features</a>
+<a class="tv-footer__link" href="/gopro/?source=footer&amp;feature=pricing">Pricing</a>
+<a class="tv-footer__link" href="/wall-of-love/">Wall of Love</a>
+<a class="tv-footer__link" href="https://www.tradingview.com/blog/en/" target="_blank">Blog</a>
+<a class="tv-footer__link" href="/bounty/">Security vulnerability</a>
+<a class="tv-footer__link" href="https://status.tradingview.com/" target="_blank">Status page</a>
+<a class="tv-footer__link" href="/policies/">Terms of use</a>
+<a class="tv-footer__link" href="/disclaimer/">Disclaimer</a>
+<a class="tv-footer__link" href="/privacy-policy/">Privacy policy</a>
+<a class="tv-footer__link" href="/cookies-policy/">Cookies policy</a>
+</div>
+</div>
+<div class="tv-footer__column tv-footer__links-group js-expand">
+<div class="tv-footer__links-group-title js-expand__title">
+<span class="tv-footer__title">Community</span>
+<svg viewbox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="m1 6 5-4 5 4" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-width="2"></path></svg>
+</div>
+<div class="tv-footer__links-group-body js-expand__body">
+<a class="tv-footer__link" href="/share-your-love/?source=footer&amp;feature=refer_friend">Refer a friend</a>
+<a class="tv-footer__link" href="/ideas/">Ideas</a>
+<a class="tv-footer__link" href="/scripts/">Scripts</a>
+<a class="tv-footer__link" href="/streams/">Streams</a>
+<a class="tv-footer__link" href="/house-rules/">House rules</a>
+<a class="tv-footer__link" href="/moderators/">Moderators</a>
+<a class="tv-footer__link" href="/pine-wizards/">Pine Wizards</a>
+<a class="tv-footer__link" href="/chat/" target="_blank">Chat</a>
+</div>
+</div>
+<div class="tv-footer__column tv-footer__links-group js-expand">
+<div class="tv-footer__links-group-title js-expand__title">
+<span class="tv-footer__title">For business</span>
+<svg viewbox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="m1 6 5-4 5 4" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-width="2"></path></svg>
+</div>
+<div class="tv-footer__links-group-body js-expand__body">
+<a class="tv-footer__link" href="/widget/">Widgets</a>
+<a class="tv-footer__link" href="/advertising-info/">Advertising</a>
+<a class="tv-footer__link" href="/tradingview-for-the-web/">Website &amp; broker solutions</a>
+<a class="tv-footer__link" href="/HTML5-stock-forex-bitcoin-charting-library/">Charting solutions</a>
+<a class="tv-footer__link" href="/lightweight-charts">Lightweight Charting Library</a>
+<a class="tv-footer__link" href="/brokerage-integration/">Brokerage integration</a>
+<a class="tv-footer__link" href="/referral-program/">Partner program</a>
+<a class="tv-footer__link" href="/publishing-tools/">Content streams &amp; RSS</a>
+</div>
+<div class="tv-footer__bottom-separator"></div>
+</div>
+</div> <div class="tv-footer-contacts">
+<hr class="tv-footer-contacts__separator"/>
+<span class="tv-footer-contacts__markets">
+<div class="tv-footer-markets">
+<a class="tv-footer-markets__link tv-footer-markets__link--desktop" href="/desktop/">
+<img alt="Download TradingView Desktop" class="tv-footer-markets__icon" src="/static/images/svg/desktop-landing/desktop-logo-footer-light.svg"/>
+<img alt="Download TradingView Desktop" class="tv-footer-markets__icon--dark" src="/static/images/svg/desktop-landing/desktop-logo-footer-dark.svg"/>
+<div class="tv-footer-markets__description">
+<p class="tv-footer-markets__description--head">Download</p>
+<p class="tv-footer-markets__description--text">Desktop app</p>
+</div>
+</a>
+<a class="tv-footer-markets__link" href="https://itunes.apple.com/us/app/tradingview-trading-community-charts-and-quotes/id1205990992?pt=118302550&amp;ct=footer" rel="nofollow" target="_blank">
+<img alt="Download on the App Store" class="tv-footer-markets__icon" src="/static/images/svg/app-store-badge/light-theme/app-store-badge-en.svg"/>
+<img alt="Download on the App Store" class="tv-footer-markets__icon--dark" src="/static/images/svg/app-store-badge/dark-theme/app-store-badge-en.svg"/>
+</a>
+<a class="tv-footer-markets__link" href="https://play.google.com/store/apps/details?id=com.tradingview.tradingviewapp&amp;referrer=utm_source%3Dtradingview%26utm_medium%3Dgplay_footer" rel="nofollow" target="_blank">
+<img alt="Get it on Google Play" class="tv-footer-markets__icon" src="/static/images/svg/google-play-badge/light-theme/google-play-badge-en.svg"/>
+<img alt="Get it on Google Play" class="tv-footer-markets__icon--dark" src="/static/images/svg/google-play-badge/dark-theme/google-play-badge-en.svg"/>
+</a>
+</div></span>
+<span class="tv-footer-contacts__logo"><a class="tv-footer-logo" href="/">
+<svg height="19" width="127" xmlns="http://www.w3.org/2000/svg"><path d="M45.2 4.96V15h-1.56V4.96H40v-1.4h9v1.4h-3.8zm7.79 3.1a1.7 1.7 0 00-.98-.33c-.52 0-.98.24-1.38.72-.4.49-.59 1.07-.59 1.75V15h-1.48V6.63h1.48v1.34a2.6 2.6 0 012.42-1.5c.26 0 .65.05 1.15.15l-.62 1.44zm6.4 5.98c-.6.74-1.5 1.12-2.73 1.12-.66 0-1.23-.24-1.7-.72a2.4 2.4 0 01-.73-1.78c0-.84.37-1.56 1.11-2.15a4.44 4.44 0 012.84-.88c.32 0 .67.07 1.07.2 0-1.35-.6-2.03-1.82-2.03-.92 0-1.64.25-2.14.75l-.62-1.24a4.55 4.55 0 012.6-.84c1.2 0 2.09.28 2.64.83.55.56.82 1.43.82 2.64v3c0 .73.22 1.22.66 1.47v.74a2.8 2.8 0 01-1.36-.26c-.3-.17-.51-.46-.64-.85zm-.14-3.15c-.47-.1-.8-.16-.99-.16-.75 0-1.36.2-1.83.58-.48.39-.72.84-.72 1.37 0 .87.52 1.3 1.54 1.3.75 0 1.42-.35 2-1.07V10.9zm9.12 4.1v-.62c-.51.52-1.26.78-2.25.78-1.05 0-1.9-.38-2.55-1.13a4.42 4.42 0 01-.97-3c0-1.25.37-2.32 1.12-3.21a3.4 3.4 0 012.68-1.33c.87 0 1.52.2 1.97.6V3.2h1.49V15h-1.49zm0-6.42a1.76 1.76 0 00-1.54-.84c-.8 0-1.44.3-1.93.89-.5.6-.74 1.35-.74 2.26 0 2.02.92 3.03 2.75 3.03.23 0 .52-.08.84-.23.33-.14.54-.3.62-.47V8.57zm5.14-5.1c.26 0 .47.09.65.27.18.18.27.4.27.64 0 .26-.09.48-.27.66a.89.89 0 01-.65.26.88.88 0 01-.64-.26.89.89 0 01-.27-.66c0-.25.09-.47.26-.65.18-.17.4-.26.65-.26zM72.7 15V7.88h-1.15V6.63h2.63V15H72.7zm9 0v-4.87c0-.89-.14-1.51-.41-1.87-.27-.36-.72-.53-1.35-.53-.34 0-.7.1-1.06.3-.37.2-.66.45-.85.75V15h-1.49V6.63h1.02l.47 1.08c.49-.82 1.29-1.23 2.4-1.23 1.83 0 2.75 1.11 2.75 3.34V15h-1.49zm3.28 2.29l.8-1.19c.87.58 1.67.87 2.4.87.67 0 1.2-.12 1.59-.35.38-.23.58-.52.58-.86 0-.68-.5-1.02-1.47-1.02-.17 0-.47.04-.9.13-.45.08-.79.12-1.03.12-1.19 0-1.78-.45-1.78-1.34 0-.28.14-.53.42-.75a2.6 2.6 0 011.03-.49c-1.18-.55-1.76-1.5-1.76-2.87 0-.88.3-1.6.9-2.19.62-.58 1.37-.87 2.27-.87.82 0 1.46.17 1.93.5l.74-.89.97.92-.9.67c.39.5.58 1.14.58 1.94a3.02 3.02 0 01-2.86 3.1l-1.23.13c-.14.02-.34.07-.58.17-.25.1-.37.22-.37.38 0 .21.25.32.76.32.23 0 .58-.04 1.05-.12.47-.08.83-.12 1.06-.12.82 0 1.46.2 1.92.59.46.39.7.94.7 1.63 0 .77-.35 1.4-1.04 1.87-.7.47-1.57.71-2.62.71-.55 0-1.12-.1-1.71-.29-.6-.2-1.09-.42-1.45-.7zm3.15-9.62c-.52 0-.94.18-1.26.55-.33.36-.5.8-.5 1.33 0 .58.17 1.06.48 1.45.32.38.74.57 1.28.57.52 0 .94-.19 1.23-.56.3-.37.45-.86.45-1.46 0-.52-.16-.97-.48-1.33a1.53 1.53 0 00-1.2-.55zm9.29 7.49h-.8l-4.26-11.6h1.74l2.94 8.42 2.84-8.43h1.68l-4.14 11.6zm6.54-11.7c.25 0 .47.1.65.28.18.18.27.4.27.64 0 .26-.1.48-.27.66a.89.89 0 01-.65.26.88.88 0 01-.65-.26.9.9 0 01-.27-.66c0-.25.1-.47.27-.65.17-.17.4-.26.65-.26zM103.14 15V7.88H102V6.63h2.63V15h-1.49zm10.9-4.04H108c0 .98.27 1.73.8 2.26.48.46 1.1.69 1.84.69.84 0 1.55-.25 2.12-.75l.63 1.07c-.23.23-.58.43-1.06.6a5.7 5.7 0 01-1.98.33 3.7 3.7 0 01-2.68-1.07 4.2 4.2 0 01-1.23-3.18c0-1.38.42-2.48 1.26-3.32a3.65 3.65 0 012.66-1.11c1.2 0 2.13.33 2.8 1 .66.65 1 1.5 1 2.57 0 .33-.05.63-.13.91zm-3.6-3.23a2.32 2.32 0 00-2.39 2.16h4.63c0-.6-.2-1.1-.57-1.5a2.2 2.2 0 00-1.68-.66zm13 7.43h-.38l-2.45-5.7-2.45 5.7h-.4l-2.98-8.55h1.58l1.8 5.5 2.22-5.5h.39l2.3 5.5 1.92-5.5h1.46l-3 8.55z" fill="currentColor"></path><path d="M30.03 7.38c.56.83.91 1.81.96 2.87A4.5 4.5 0 0129.5 19H7a5.98 5.98 0 01-4.22-1.74l9.55-7.55a2.49 2.49 0 002.24.05l4.55 3.98a2.5 2.5 0 104.71-.15l6.2-6.2zM28.6 5.97l-6.2 6.2a2.5 2.5 0 00-1.98.07l-4.55-3.98a2.5 2.5 0 10-4.8-.12l-9.47 7.5A6 6 0 017.06 7a8 8 0 0115.62-1.23 5.47 5.47 0 015.93.2z" fill="#2196F3"></path></svg>
+</a></span>
+<span class="tv-footer-contacts__socials">
+<div class="tv-footer-socials">
+<a aria-label="TradingView on Facebook" class="tv-footer-socials__icon tv-footer-socials__icon--facebook" href="https://www.facebook.com/tradingview/" rel="nofollow" target="_blank">
+<svg height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M14 4a10 10 0 011.56 19.88v-6.99h2.33l.45-2.89h-2.78v-1.88c0-.79.39-1.56 1.63-1.56h1.26V8.1s-1.14-.2-2.24-.2c-2.28 0-3.77 1.4-3.77 3.9V14H9.9v2.9h2.54v6.98A10.01 10.01 0 0114 4z" fill="#1877F2"></path></svg>
+</a>
+<a aria-label="TradingView on Twitter" class="tv-footer-socials__icon tv-footer-socials__icon--twitter" href="https://twitter.com/tradingview/" rel="nofollow" target="_blank">
+<svg height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M10.28 22.26c7.55 0 11.68-6.26 11.68-11.67v-.53c.8-.58 1.49-1.3 2.04-2.13-.74.33-1.53.54-2.36.65.85-.5 1.5-1.32 1.8-2.28-.78.48-1.66.81-2.6 1a4.1 4.1 0 00-7 3.74c-3.4-.17-6.43-1.8-8.46-4.29a4.1 4.1 0 001.28 5.48c-.68-.02-1.3-.2-1.86-.5v.05a4.11 4.11 0 003.29 4.02 4 4 0 01-1.85.08 4.1 4.1 0 003.83 2.85A8.23 8.23 0 014 20.43a11.67 11.67 0 006.28 1.83z" fill="#1DA1F2"></path></svg>
+</a>
+<a aria-label="TradingView on YouTube" class="tv-footer-socials__icon tv-footer-socials__icon--youtube" href="https://www.youtube.com/channel/UCfOflihrkOKDQZ_ZKtF2VfQ/" rel="nofollow" target="_blank">
+<svg fill="currentColor" height="17" viewbox="0 0 21 17" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M20.783 3.487s-.218-1.564-.833-2.254c-.797-.91-1.702-.91-2.1-.946C14.917.07 10.5.033 10.5.033S6.083.07 3.15.287c-.398.036-1.303.073-2.1.946-.652.69-.833 2.254-.833 2.254S0 5.342 0 7.197v1.708c0 1.855.217 3.673.217 3.673s.218 1.564.833 2.255c.797.91 1.847.872 2.317.98 1.666.183 7.133.22 7.133.22s4.417 0 7.35-.255c.398-.036 1.303-.073 2.1-.945.616-.69.833-2.255.833-2.255S21 10.723 21 8.905v-1.71c0-1.853-.217-3.708-.217-3.708zm-12.847.855v7.86l6.854-3.84-6.854-4.02z" fill-rule="evenodd"></path></svg>
+</a>
+<a aria-label="TradingView on LinkedIn" class="tv-footer-socials__icon tv-footer-socials__icon--linkedin" href="https://www.linkedin.com/company/tradingview/" rel="nofollow" target="_blank">
+<svg height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M6 4a2 2 0 00-2 2v16c0 1.1.9 2 2 2h16a2 2 0 002-2V6a2 2 0 00-2-2H6zm4.36 7.83v9.34h-3.1v-9.34h3.1zm.2-2.9c0 .9-.67 1.62-1.75 1.62H8.8c-1.04 0-1.7-.71-1.7-1.6 0-.92.68-1.62 1.74-1.62s1.71.7 1.73 1.6zm4.6 12.24h-3.09s.03-8.46 0-9.34h3.08v1.34a3.07 3.07 0 012.8-1.56c2.03 0 3.56 1.34 3.56 4.2v5.36h-3.1v-5c0-1.25-.44-2.1-1.56-2.1-.85 0-1.36.57-1.59 1.13-.08.2-.1.48-.1.76v5.21z" fill="#2867B2"></path></svg>
+</a>
+</div></span>
+<span class="tv-footer-contacts__copyright">
+<div class="tv-footer-copyright">
+<span>
+		Select market data provided <span class="i-no-break">by		<a class="tv-footer-copyright__link" href="https://www.theice.com/market-data" rel="nofollow" target="_blank">ICE Data Services</a>
+</span> </span>
+<span>© 2021 TradingView</span>
+</div></span>
+</div>
+</div>
+</footer>
+</div>
+<div class="tv-device-menu tv-device-menu--left i-hidden" data-device-menu-id="left">
+<div class="tv-device-menu__inner">
+<span class="tv-device-menu__item js-device-menu__close">
+<span class="tv-device-menu__item-text">
+<span class="tv-device-menu__arrow"><svg height="16" viewbox="0 0 10 16" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M9.4 1.4l-1.4-1.4-8 8 8 8 1.4-1.4-6.389-6.532 6.389-6.668z"></path></svg></span>
+</span>
+</span>
+<form action="/change_language/" class="js-lang-form js-lang-form-expand tv-device-menu__expand tv-device-menu__expand--big" method="POST">
+<input name="language" type="hidden" value=""/>
+<div class="js-lang-dropdown-list-mobile"></div>
+</form>
+</div>
+</div>
+<div class="tv-device-menu tv-device-menu--center i-hidden" data-device-menu-id="center">
+<div class="tv-device-menu__inner">
+<a class="tv-device-menu__item" href="/">
+<span class="tv-device-menu__item-text">Home</span>
+</a>
+<a class="tv-device-menu__item" href="/screener/">
+<span class="tv-device-menu__item-text">Stock Screener</span>
+</a>
+<a class="tv-device-menu__item" href="/forex-screener/">
+<span class="tv-device-menu__item-text">Forex Screener</span>
+</a>
+<a class="tv-device-menu__item" href="/crypto-screener/">
+<span class="tv-device-menu__item-text">Crypto Screener</span>
+</a>
+<a class="tv-device-menu__item" href="/markets/currencies/economic-calendar/">
+<span class="tv-device-menu__item-text">Economic Calendar</span>
+</a>
+<a class="tv-device-menu__item" href="/how-it-works/">
+<span class="tv-device-menu__item-text">How It Works</span>
+</a>
+<a class="tv-device-menu__item" href="/features/">
+<span class="tv-device-menu__item-text">Chart Features</span>
+</a>
+<a class="tv-device-menu__item" href="/gopro/?source=device_menu&amp;feature=pricing">
+<span class="tv-device-menu__item-text">Pricing</span>
+</a>
+<a class="tv-device-menu__item tv-device-menu__item" href="/share-your-love/?source=device_menu&amp;feature=refer_friend">
+<span class="tv-device-menu__item-text">Refer a friend</span>
+</a>
+<a class="tv-device-menu__item" href="/house-rules/">
+<span class="tv-device-menu__item-text">House Rules</span>
+</a>
+<a class="tv-device-menu__item tv-device-menu__item js-open-support-dialog" href="/support/">
+<span class="tv-device-menu__item-text">Help Center</span>
+</a>
+<a class="tv-device-menu__item" href="/tradingview-for-the-web/">
+<span class="tv-device-menu__item-text">Website &amp; Broker Solutions</span>
+</a>
+<a class="tv-device-menu__item" href="/widget/">
+<span class="tv-device-menu__item-text">Widgets</span>
+</a>
+<a class="tv-device-menu__item" href="/HTML5-stock-forex-bitcoin-charting-library/">
+<span class="tv-device-menu__item-text">Charting Solutions</span>
+</a>
+<a class="tv-device-menu__item" href="/lightweight-charts">
+<span class="tv-device-menu__item-text">Lightweight Charting Library</span>
+</a>
+<a class="tv-device-menu__item tv-device-menu__item--ext" href="https://www.tradingview.com/blog/en/" target="_blank">
+<span class="tv-device-menu__item-text">Blog &amp; News<svg height="11" viewbox="0 0 11 11" width="11" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 6v3.5a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1H5m5.5 0L6 5M7 .5h3.5V4" fill="none" stroke="currentColor"></path></svg></span>
+</a>
+<a class="tv-device-menu__item tv-device-menu__item--ext" href="https://twitter.com/tradingview/" rel="nofollow" target="_blank">
+<span class="tv-device-menu__item-text">Twitter<svg height="11" viewbox="0 0 11 11" width="11" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 6v3.5a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1H5m5.5 0L6 5M7 .5h3.5V4" fill="none" stroke="currentColor"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="tv-device-menu tv-device-menu--notifications i-hidden" data-device-menu-id="notifications"></div>
+<div class="tv-device-menu tv-device-menu--right i-hidden" data-device-menu-id="right">
+<div class="tv-device-menu__inner">
+<span class="tv-device-menu__item js-device-menu__close i-align_right">
+<span class="tv-device-menu__item-text">
+<span class="tv-device-menu__arrow"><svg height="16" viewbox="0 0 10 16" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M.6 1.4l1.4-1.4 8 8-8 8-1.4-1.4 6.389-6.532-6.389-6.668z"></path></svg></span>
+</span>
+</span>
+<a class="tv-device-menu__item tv-device-menu__item--user js-device-userlink js-profile-path" data-item-menu="username">
+<div class="tv-device-menu__user-row">
+<div class="tv-device-menu__userpic">
+<img class="tv-header__userpic js-userpic"/>
+<i class="tv-header__icon--counter-red tv-device-menu__userpic-notification-indicator js-support-notifications-indicator i-hidden"></i>
+</div>
+<span class="tv-device-menu__item-text js-username"></span>
+<span class="js-user-badge-wrap">
+</span>
+</div>
+</a>
+<a class="tv-device-menu__item js-profile-path" data-item-menu="profile">
+<span class="tv-device-menu__item-text">
+				Profile
+			</span>
+</a>
+<a class="tv-device-menu__item js-profile-path" data-item-menu="profile settings" data-page="settings-profile">
+<span class="tv-device-menu__item-text">Profile Settings</span>
+</a>
+<a class="tv-device-menu__item js-profile-path js-profile-hidden-for-broker" data-item-menu="account and billing" data-page="billing">
+<span class="tv-device-menu__item-text">Account and Billing</span>
+</a>
+<a class="tv-device-menu__item js-user-referral--link js-profile-hidden-for-broker" data-item-menu="referred friends" href="/share-your-love/?source=header_dropdown_mobile&amp;feature=referral">
+<span class="tv-device-menu__item-text">Referred friends</span>
+<span class="tv-device-menu__item-counter tv-device-menu__item-counter--with-icon">
+<span class="js-user-counter--joined"></span>
+<span class="tv-header__dropdown-counter__coin-icon"> <svg fill="none" height="18" viewbox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="5.5" r="3" stroke="currentColor"></circle><path d="M3.51 16a5.47 5.47 0 0 1 5.47-5.47m0 0c.65 0 1.27.1 1.85.32m-1.85-.32a5.5 5.5 0 0 1 5.5 5.47" stroke="currentColor"></path></svg></span>
+</span>
+</a>
+<a class="tv-device-menu__item js-user-coins--link js-profile-hidden-for-broker" data-item-menu="coins" href="/share-your-love/?source=header_dropdown_mobile&amp;feature=referral">
+<span class="tv-device-menu__item-text">Coins</span>
+<span class="tv-device-menu__item-counter tv-device-menu__item-counter--with-icon">
+<span class="js-user-counter--coins"></span>
+<span class="tv-device-menu__item-counter__coin-icon"> <svg fill="none" height="28" viewbox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="10.25" stroke="currentColor" stroke-width="1.5"></circle><path d="M7.97 14.97a.75.75 0 1 0 1.06 1.06l-1.06-1.06zM12 12l.53-.53a.75.75 0 0 0-1.06 0L12 12zm3.5 3.5l-.53.53c.3.3.77.3 1.06 0l-.53-.53zm4.03-2.97a.75.75 0 1 0-1.06-1.06l1.06 1.06zm-10.5 3.5l3.5-3.5-1.06-1.06-3.5 3.5 1.06 1.06zm2.44-3.5l3.5 3.5 1.06-1.06-3.5-3.5-1.06 1.06zm4.56 3.5l3.5-3.5-1.06-1.06-3.5 3.5 1.06 1.06z" fill="currentColor"></path><path d="M18.9 9a7 7 0 0 0-11.83 4M9 18.9A7 7 0 0 0 20.93 15" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg></span>
+</span>
+</a>
+<a class="tv-device-menu__item js-support-tickets-link i-hidden" href="#support">
+<span class="tv-device-menu__item-text">My Support Tickets</span>
+</a>
+<a class="tv-device-menu__item js-support-dialog" data-item-menu="help center" href="/support/">
+<span class="tv-device-menu__item-text">Help Center</span>
+<span class="tv-device-menu__item-counter tv-device-menu__item-counter--agressive js-user-counter--support i-hidden"></span>
+</a>
+<a class="tv-device-menu__item" data-item-menu="private messages" href="/chat/private/" target="_blank">
+<span class="tv-device-menu__item-text">Private Messages</span>
+</a>
+<a class="tv-device-menu__item" data-item-menu="chat" href="/chat/" target="_blank">
+<span class="tv-device-menu__item-text">Chat</span>
+</a>
+<label class="tv-device-menu__item" data-item-menu="dark color theme">
+<span class="tv-device-menu__item-text">Dark color theme</span>
+<span class="tv-device-menu__item-at-right js-dark-theme-switcher"></span>
+</label>
+<a class="tv-device-menu__item js-signout" data-item-menu="sign out" href="#signout">
+<span class="tv-device-menu__item-text">Sign Out</span>
+</a>
+<div class="tv-device-menu__item tv-device-menu__item--inactive tv-device-menu__item--no-line i-align_center">
+<span class="tv-header__gopro">
+<a class="tv-header__btn tv-header__btn--main" href="/gopro/?source=header_go_pro_button&amp;feature=Buy Pro">
+		Upgrade
+	</a>
+<a class="tv-header__btn tv-header__btn--trial" href="/gopro/?source=header_go_pro_button&amp;feature=Buy Trial">
+<span class="apply-overflow-tooltip">Upgrade now</span>
+<small class="apply-overflow-tooltip">30-day Free Trial</small>
+</a>
+<a class="tv-header__btn tv-header__btn--trial-join" href="/gopro/?source=header_go_pro_button&amp;feature=start_free_trial">
+			Start free trial
+		</a>
+<a class="tv-header__btn tv-header__btn--upgrade" href="/gopro/?source=header_go_pro_button&amp;feature=Upgrade Pro">
+<span class="apply-overflow-tooltip">Upgrade plan</span>
+<small class="apply-overflow-tooltip">Pay nothing extra</small>
+</a>
+<a class="tv-header__btn tv-header__btn--earlyaccess" href="/gopro/?source=header_go_pro_button&amp;feature=Buy EA">
+<span class="tv-header__earlyaccess-text apply-overflow-tooltip">Upgrade early</span>
+<small class="tv-header__earlyaccess-text js-trial-days-left apply-overflow-tooltip"></small>
+</a>
+</span>
+</div>
+</div>
+</div>
+<script nonce="5cEijKdgxONMpcGS">window.fbAppId = 155037361239837;</script>
+<script nonce="5cEijKdgxONMpcGS">
+		window.BLOG_LOCALIZED_URL = 'https://www.tradingview.com/blog/en/';
+
+
+		initData.idc_exchanges_list = ["dfm","nzx","nzx_futures","bme","szse","hkex","hkex_futures","nag","tse","tfx","tocom","ose","sgx","sgx_stocks","sgx_futures","twse","bcba","bovespa_stocks","bovespa_futures","bvc","bmv","bvl","bcs","six","bahrain","belex","egx","nseng","idx","qse"]
+		initData.idc_delay_exchanges_list = ["nzx_futures","nag","tfx","bvc","bahrain","belex"]
+
+		initData.block_widgetbar = function (WidgetBar, ContentPageResizer, RootResizer) {
+					loginStateChange.subscribe(this, function (is_initial) {
+						if(!is_initial && !window.widgetbar && user && is_authenticated){
+							var resizer = new ContentPageResizer(window);
+							window.widgetbar = new WidgetBar({
+								resizerBridge: resizer.allocate({ areaName: 'right' }),
+								adaptive: true,
+								settingsPrefix: 'widgetbar',
+								instantLoad: true,
+							});
+						}
+					})
+		};
+
+			initData.offlineAlertEventsOnInit = true;
+
+
+	</script>
+<script type="application/prs.init-data+json">
+		{
+			"gaId": "UA-24278967-1",
+			"optimizeId": "GTM-TVZD48S",
+			"gaVars": {"app":"web","usertype":"anonymous"},
+			"gaGdpr": false,
+			"gadwId": "AW-1009760228",
+			"fbTagId": "1508275579478794",
+			"yaTagId": "69731728"		}
+	</script>
+<script type="application/prs.init-data+json">
+	{
+		"streams_enabled": true,
+		"theme": "light",
+		"days_to_deactivation": null	}
+	</script>
+<meta content="prod-frontend-web-8" name="tv:server-name"/>
+</body>
+</html>
