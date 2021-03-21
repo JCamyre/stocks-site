@@ -2,6 +2,6 @@
 {% extends 'stocktracker/base.html' %}
 {% load tags %}
 {% block content %}
-    {{ object }}
+    {{ object|stock_due_diligence }}
 {% endblock content %}
 
