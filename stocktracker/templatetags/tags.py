@@ -1,5 +1,5 @@
 from django import template
-from stocktracker.methods import format_stock_info
+from stocktracker.methods import format_stock_info, due_diligence
 # templatetags vs static/tags?
 register = template.Library()
 
@@ -19,4 +19,6 @@ def get_all_porfolios(portfolios):
 		print(portfolio.stocks)
 	return portfolios.all()
 
-
+@register.filter(name='stock_due_diligence')
+def stock_due_diligence(stock):
+	return due_diligence(stock)

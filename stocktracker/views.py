@@ -4,11 +4,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from datetime import datetime
 from .methods import format_stock_info
-from .models import Portfolio, Stock, delete_all_stocks
+from .models import Portfolio, Stock, delete_all_stocks, delete_duplicate_stocks
 
 # After you login, loop through your stock tickers using format_stock_info to get the stock info on each
 
 class PortfolioListView(ListView):
+	delete_duplicate_stocks()			
 	model = Portfolio # Specify what model to be displayed 
 	template_name = 'stocktracker/home.html' # Specify which template to be displayed
 	context_object_name = 'portfolio' # Specify variable name to refer to model in template 'home.html'

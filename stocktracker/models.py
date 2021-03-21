@@ -69,11 +69,10 @@ def add_stocks(): # Only run if you need to reset the Stock objects
 	# 	Stock.objects.create(ticker=ticker)
 
 	for ticker in get_nyse()['Code']:
-		Stock.objects.create(ticker=ticker)
+		Stock.objects.create(ticker=ticker, slug=ticker)
 
 def delete_all_stocks():
 	Stock.objects.all().delete()
-
 
 def delete_duplicate_stocks():
 	all_stocks = Stock.objects.all()
@@ -81,9 +80,9 @@ def delete_duplicate_stocks():
 	for stock in list(unique_tickers):
 		duplicates = Stock.objects.filter(ticker=stock)
 		if duplicates.count() > 1:
-			[type(duplicate) for duplicate in duplicates[1:]]
+			[duplicate.delete() for duplicate in duplicates[1:]]
 			# print(duplicates)
-			
+
 
 # .id works for accessing a Stock's unique id
 
