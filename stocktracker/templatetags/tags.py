@@ -25,3 +25,7 @@ def get_all_porfolios(portfolios):
 def stock_due_diligence(stock):
 	stock_object = py_trading.Stock(stock.ticker)
 	return stock_object.big_money()
+
+@register.filter(name='df_to_iter')
+def df_to_iter(df):
+	return df.values
