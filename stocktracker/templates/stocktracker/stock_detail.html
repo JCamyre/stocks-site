@@ -2,13 +2,18 @@
 {% extends 'stocktracker/base.html' %}
 {% load tags %}
 {% block content %}
+    <a href='https://finance.yahoo.com/quote/{{ object.ticker}}' target='_blank'><h1>{{ object.ticker }}</h1></a> <!-- _blank opens up a new table when clicking on link -->
     <!-- ETF's -->
-    {% for df in object|stock_due_diligence %}
-        {% for row in df|df_to_iter %}
-            {{ row }}
-            <p></p>
-        {% endfor %}
-        <p></p>
-    {% endfor %}
+    <table>
+        <tr></tr>
+            <tr>
+                {% for df in object|stock_due_diligence %}
+                    {% for row in df|df_to_iter %}
+                        <tr>{{ row }}</tr>
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+    </table>
+
 {% endblock content %}
 
