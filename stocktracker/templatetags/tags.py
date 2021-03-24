@@ -29,3 +29,7 @@ def stock_due_diligence(stock):
 @register.filter(name='df_to_iter')
 def df_to_iter(df):
 	return df.values
+
+@register.filter(name='df_values')
+def df_columns(df):
+	return df.columns

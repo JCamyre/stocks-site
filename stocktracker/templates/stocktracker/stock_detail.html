@@ -7,9 +7,14 @@
     <table>
             <tr>
                 {% for df in object|stock_due_diligence %}
-                     {% for row in df|df_to_iter %}
+                    {% for label in df|df_values %}
+                        <th>{{ label }}</th>
+                    {% endfor %}
+                     {% for rows in df|df_to_iter %}
                      <tr>
+                        {% for row in rows %}
                        <td>{{ row }}</td> 
+                        {% endfor %}
                      </tr>   
                     {% endfor %}
                 {% endfor %}
